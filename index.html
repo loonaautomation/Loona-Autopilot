@@ -1,0 +1,2696 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" type="image/jpeg" data-hatch-href="assets/loona-logo.jpg" />
+    <title>Loona Autopilot — AI Office Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0a1120;
+        --bg-2: #0e1730;
+        --surface: #111c36;
+        --surface-2: #16233f;
+        --line: #24345a;
+        --ink: #eef2fb;
+        --ink-soft: #b9c4dd;
+        --ink-faint: #8494b8;
+        --gold: #d9a441;
+        --gold-bright: #f0bc55;
+        --gold-ink: #1a1206;
+        --hot: #ff6b4a;
+        --warm: #f0bc55;
+        --cold: #6fb7ff;
+        --ok: #43d68a;
+        --shadow: 0 18px 44px rgba(2, 6, 18, .5);
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: "Manrope", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      .urdu { font-family: "Noto Nastaliq Urdu", serif; line-height: 2; }
+      h1, h2, h3, .brand-name { font-family: "Sora", "Manrope", sans-serif; }
+      a { color: inherit; }
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 0 20px; }
+
+      /* ---------- header ---------- */
+      header {
+        position: sticky; top: 0; z-index: 40;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .header-in { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+      .logo-img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; border: 1px solid var(--gold); flex: none; }
+      .brand-name { font-size: 1.12rem; font-weight: 700; letter-spacing: .2px; line-height: 1.15; }
+      .brand-sub { font-size: .72rem; color: var(--gold); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+      .header-cta {
+        margin-left: auto; flex: none;
+        background: var(--gold); color: var(--gold-ink);
+        font-weight: 800; font-size: .85rem; text-decoration: none;
+        padding: 9px 16px; border-radius: 9px;
+      }
+      .header-cta:hover { background: var(--gold-bright); }
+
+      /* ---------- hero ---------- */
+      .hero { padding: 52px 0 40px; text-align: center; }
+      .hero-badge {
+        display: inline-block; font-size: .76rem; font-weight: 800; letter-spacing: .16em;
+        color: var(--gold); border: 1px solid var(--gold); border-radius: 999px; padding: 5px 14px;
+        text-transform: uppercase;
+      }
+      .hero h1 { font-size: clamp(2.3rem, 6vw, 3.6rem); margin: 18px 0 4px; font-weight: 800; letter-spacing: -.01em; }
+      .hero .tagline { font-family: "Sora", sans-serif; font-size: clamp(1.15rem, 3vw, 1.6rem); color: var(--gold); font-weight: 600; margin: 0 0 18px; }
+      .hero .promise { max-width: 720px; margin: 0 auto 28px; font-size: clamp(1rem, 2.4vw, 1.16rem); color: var(--ink-soft); }
+      .cta-gold {
+        display: inline-block; background: var(--gold); color: var(--gold-ink);
+        font-weight: 800; font-size: 1.02rem; text-decoration: none;
+        padding: 14px 30px; border-radius: 11px; box-shadow: 0 10px 26px rgba(217, 164, 65, .28);
+      }
+      .cta-gold:hover { background: var(--gold-bright); }
+      .cta-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+      .cta-outline {
+        display: inline-block; background: transparent; color: var(--ink);
+        font-weight: 800; font-size: 1.02rem; text-decoration: none;
+        padding: 13px 28px; border-radius: 11px; border: 2px solid var(--gold);
+      }
+      .cta-outline:hover { background: color-mix(in srgb, var(--gold) 14%, transparent); }
+      .book-note { margin: 16px auto 0; max-width: 560px; font-size: .9rem; color: var(--ink-faint); }
+      .hero-note { margin-top: 14px; font-size: .86rem; color: var(--ink-faint); }
+
+      /* ---------- sections ---------- */
+      section { padding: 34px 0; }
+      .sec-head { margin-bottom: 20px; }
+      .sec-head h2 { font-size: clamp(1.5rem, 4vw, 2rem); margin: 0 0 6px; font-weight: 700; }
+      .sec-head p { margin: 0; color: var(--ink-soft); max-width: 640px; }
+
+      /* ---------- demo ---------- */
+      .demo-panel {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px;
+      }
+      .field-label { display: block; font-weight: 700; font-size: .92rem; margin: 0 0 8px; }
+      .biz-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; margin-bottom: 16px; }
+      .biz-row .grow { flex: 1 1 220px; }
+      select, textarea {
+        width: 100%; background: var(--surface-2); color: var(--ink);
+        border: 1px solid var(--line); border-radius: 10px;
+        font: inherit; font-size: .98rem; padding: 11px 13px;
+      }
+      select:focus, textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; border-color: var(--gold); }
+      textarea { min-height: 96px; resize: vertical; }
+      .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 18px; }
+      .chip {
+        font: inherit; font-size: .85rem; font-weight: 600; cursor: pointer;
+        background: var(--bg-2); color: var(--ink-soft);
+        border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; text-align: left;
+      }
+      .chip:hover { border-color: var(--gold); color: var(--ink); }
+      .chip.active { border-color: var(--gold); color: var(--gold); background: color-mix(in srgb, var(--gold) 12%, var(--bg-2)); }
+      .run-btn {
+        display: inline-flex; align-items: center; gap: 10px;
+        background: var(--gold); color: var(--gold-ink); border: 0; cursor: pointer;
+        font: inherit; font-weight: 800; font-size: 1.05rem;
+        padding: 14px 30px; border-radius: 11px; width: 100%; justify-content: center;
+      }
+      .run-btn:hover:not(:disabled) { background: var(--gold-bright); }
+      .run-btn:disabled { opacity: .55; cursor: wait; }
+      .form-hint { color: var(--hot); font-size: .88rem; font-weight: 600; margin: 10px 0 0; display: none; }
+      .biz-auto-hint { display: none; margin: 7px 0 0; font-size: .83rem; font-weight: 700; color: var(--gold); }
+      .biz-auto-hint.show { display: block; }
+
+      /* pipeline */
+      .pipeline { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin: 26px 0 6px; }
+      .stage {
+        background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px;
+        padding: 12px 10px; text-align: center; opacity: .45; transition: opacity .3s, border-color .3s, box-shadow .3s;
+      }
+      .stage .num {
+        width: 30px; height: 30px; margin: 0 auto 7px; border-radius: 50%;
+        border: 2px solid var(--line); display: grid; place-items: center;
+        font-weight: 800; font-size: .85rem; color: var(--ink-soft);
+      }
+      .stage .st-title { font-weight: 700; font-size: .82rem; line-height: 1.3; }
+      .stage .st-status { font-size: .72rem; color: var(--ink-faint); margin-top: 4px; min-height: 1.9em; line-height: 1.35; }
+      .stage.active { opacity: 1; border-color: var(--gold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent); }
+      .stage.active .num { border-color: var(--gold); color: var(--gold); animation: pulse 1s ease-in-out infinite; }
+      .stage.done { opacity: 1; border-color: var(--ok); }
+      .stage.done .num { border-color: var(--ok); background: var(--ok); color: #06240f; animation: none; }
+      @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.14); } }
+      @media (prefers-reduced-motion: reduce) {
+        .stage.active .num { animation: none; }
+        html { scroll-behavior: auto; }
+      }
+      @media (max-width: 720px) { .pipeline { grid-template-columns: repeat(2, 1fr); } }
+
+      /* results */
+      .results { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+      @media (max-width: 720px) { .results { grid-template-columns: 1fr; } }
+      .card {
+        background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
+        opacity: 0; transform: translateY(8px); transition: opacity .35s, transform .35s;
+      }
+      .card.show { opacity: 1; transform: none; }
+      .card h3 { margin: 0 0 10px; font-size: .98rem; display: flex; align-items: center; gap: 8px; }
+      .card h3 .ic { font-size: 1.05rem; }
+      .kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: .92rem; }
+      .kv dt { color: var(--ink-faint); font-weight: 600; }
+      .kv dd { margin: 0; font-weight: 600; }
+      .score-badge {
+        display: inline-block; font-family: "Sora", sans-serif; font-weight: 800; font-size: 1.5rem;
+        padding: 4px 18px; border-radius: 10px; margin-bottom: 8px;
+      }
+      .score-Hot { background: color-mix(in srgb, var(--hot) 18%, transparent); color: var(--hot); border: 1px solid var(--hot); }
+      .score-Warm { background: color-mix(in srgb, var(--warm) 16%, transparent); color: var(--warm); border: 1px solid var(--warm); }
+      .score-Cold { background: color-mix(in srgb, var(--cold) 16%, transparent); color: var(--cold); border: 1px solid var(--cold); }
+      .score-reason { color: var(--ink-soft); font-size: .93rem; margin: 0; }
+      .reply-text { font-size: .95rem; color: var(--ink); margin: 0; white-space: pre-wrap; }
+      .sheet-scroll { overflow-x: auto; }
+      table.sheet { width: 100%; border-collapse: collapse; font-size: .86rem; min-width: 340px; }
+      table.sheet th, table.sheet td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+      table.sheet th { color: var(--ink-faint); font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; }
+      table.sheet tr.new-row td { background: color-mix(in srgb, var(--gold) 16%, transparent); font-weight: 700; }
+      .pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: .76rem; font-weight: 800; }
+      .pill-Hot { background: var(--hot); color: #fff; }
+      .pill-Warm { background: var(--warm); color: #241a02; }
+      .pill-Cold { background: var(--cold); color: #07223f; }
+      .alert-phone {
+        background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 14px;
+      }
+      .alert-head { display: flex; align-items: center; gap: 8px; font-size: .76rem; color: var(--ink-faint); font-weight: 700; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 8px; }
+      .alert-body { font-size: .94rem; margin: 0; white-space: pre-wrap; }
+      .honesty {
+        margin-top: 18px; border: 1px dashed var(--gold); border-radius: 10px;
+        padding: 12px 16px; font-size: .92rem; color: var(--ink-soft); background: color-mix(in srgb, var(--gold) 7%, transparent);
+      }
+      .honesty strong { color: var(--gold); }
+
+      /* ---------- flow diagram ---------- */
+      .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0; margin-bottom: 22px; }
+      .flow-step {
+        flex: 1 1 130px; background: var(--surface); border: 1px solid var(--line);
+        border-radius: 12px; padding: 14px 12px; text-align: center;
+      }
+      .flow-step .fi { font-size: 1.5rem; display: block; margin-bottom: 6px; }
+      .flow-step b { display: block; font-size: .9rem; }
+      .flow-step span { font-size: .78rem; color: var(--ink-faint); }
+      .flow-arrow { align-self: center; padding: 0 5px; color: var(--gold); font-weight: 800; flex: none; }
+      @media (max-width: 720px) {
+        .flow { flex-direction: column; }
+        .flow-arrow { transform: rotate(90deg); padding: 4px 0; margin: 0 auto; }
+      }
+      .inside-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      @media (max-width: 640px) { .inside-list { grid-template-columns: 1fr; } }
+      .inside-item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 15px 17px; }
+      .inside-item b { color: var(--gold); }
+      .inside-item p { margin: 4px 0 0; color: var(--ink-soft); font-size: .92rem; }
+
+      /* ---------- benefits ---------- */
+      .benefits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      @media (max-width: 640px) { .benefits { grid-template-columns: 1fr; } }
+      .benefit { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+      .benefit .bi { font-size: 1.7rem; display: block; margin-bottom: 8px; }
+      .benefit h3 { margin: 0 0 6px; font-size: 1.05rem; }
+      .benefit p { margin: 0; color: var(--ink-soft); font-size: .93rem; }
+
+      .final-cta { text-align: center; padding: 14px 0 8px; }
+      .final-cta h2 { font-size: clamp(1.4rem, 4vw, 1.9rem); margin: 0 0 8px; }
+      .final-cta p { color: var(--ink-soft); margin: 0 auto 20px; max-width: 560px; }
+
+      footer { border-top: 1px solid var(--line); margin-top: 30px; padding: 22px 0 30px; }
+      .footer-in { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; text-align: center; }
+      .footer-in img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; border: 1px solid var(--gold); }
+      .footer-text { font-size: .9rem; color: var(--ink-soft); font-weight: 600; }
+
+            /* ============================================================
+         AI ASSISTANT — Rehan-style dashboard card (owner spec
+         2026-10-16, revised after his Rehan screenshots): the
+         assistant is a normal card INSIDE the page flow, sitting
+         in the top-right column next to the hero — exactly like
+         rehan.education's dashboard, where the AI Assistant card
+         sits in the content grid beside the other cards. It is
+         NOT a fixed overlay: it never covers the header, the
+         hero headline or any button, on desktop or mobile.
+         Structure mirrors Rehan's card 1:1: card title row
+         ("AI Assistant" + small robot icon), then an inner panel
+         with its own header strip (robot + "AI Assistant" +
+         chevron), a soft greeting bubble, quiet quick-question
+         chips, and a pill input + round send button.
+         Palette stays this site's navy + gold; the card itself
+         uses a plain line border and a soft shadow — no gold
+         frame, no glow.
+         ============================================================ */
+      .top-layout {
+        display: grid; grid-template-columns: minmax(0, 1fr) 318px;
+        gap: 24px; align-items: start;
+      }
+      .top-layout .hero { text-align: left; padding: 34px 0 12px; }
+      .top-layout .hero .promise { margin: 0 0 28px; }
+      .top-layout .hero .cta-row { justify-content: flex-start; }
+      .top-layout .hero .book-note { margin-left: 0; }
+      .ai-guide-card {
+        width: 100%; margin-top: 22px;
+        background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(2, 6, 18, .32);
+        padding: 12px;
+      }
+      .ai-card-title {
+        display: flex; align-items: center; justify-content: space-between;
+        font-family: "Sora", sans-serif; font-weight: 700; font-size: .9rem;
+        color: var(--ink); margin: 0 2px 9px;
+      }
+      .ai-card-title-icon { font-size: .95rem; line-height: 1; }
+      .ai-inner {
+        border: 1px solid var(--line); border-radius: 10px;
+        overflow: hidden; background: var(--bg-2);
+        display: flex; flex-direction: column;
+      }
+      .ai-guide-head {
+        display: flex; align-items: center; gap: 8px; flex: none;
+        padding: 7px 10px;
+        background: color-mix(in srgb, var(--gold) 8%, var(--surface-2));
+        border-bottom: 1px solid var(--line);
+      }
+      .ai-guide-robot {
+        width: 26px; height: 26px; flex: none; border-radius: 50%;
+        display: grid; place-items: center; font-size: .9rem;
+        background: color-mix(in srgb, var(--gold) 16%, var(--surface-2));
+        border: 1px solid var(--line);
+      }
+      .ai-guide-title { font-family: "Sora", sans-serif; font-weight: 700; font-size: .83rem; line-height: 1.25; }
+      .ai-guide-toggle {
+        margin-left: auto; flex: none; background: none; cursor: pointer;
+        border: 0; border-radius: 8px;
+        color: var(--ink-soft); font-size: .95rem; line-height: 1; padding: 4px 7px;
+      }
+      .ai-guide-toggle:hover { color: var(--gold); }
+      .ai-guide-card.collapsed .ai-guide-body { display: none; }
+      .ai-guide-body { display: flex; flex-direction: column; min-height: 0; }
+      .ai-guide-msgs {
+        overflow-y: auto; max-height: 178px;
+        padding: 10px; display: flex; flex-direction: column; gap: 8px;
+      }
+      .ai-msg {
+        max-width: 94%; padding: 7px 11px; border-radius: 10px;
+        font-size: .83rem; line-height: 1.45; overflow-wrap: break-word;
+      }
+      .ai-msg.bot {
+        background: color-mix(in srgb, var(--cold) 13%, var(--surface-2));
+        border-bottom-left-radius: 4px; align-self: flex-start; color: var(--ink);
+      }
+      .ai-msg.user {
+        background: color-mix(in srgb, var(--gold) 18%, var(--surface-2));
+        border: 1px solid var(--gold);
+        border-bottom-right-radius: 4px; align-self: flex-end;
+      }
+      .ai-msg ul { margin: 6px 0 2px; padding-left: 18px; }
+      .ai-msg li { margin: 3px 0; }
+      .ai-msg b { color: var(--gold-bright); }
+      .ai-guide-chips { display: flex; flex-wrap: wrap; gap: 5px; padding: 0 10px 8px; flex: none; }
+      .ai-guide-chip {
+        font: inherit; font-size: .72rem; font-weight: 600; cursor: pointer;
+        background: var(--surface); color: var(--ink-soft);
+        border: 1px solid var(--line); border-radius: 999px; padding: 4px 9px;
+      }
+      .ai-guide-chip:hover { border-color: var(--gold); color: var(--ink); }
+      .ai-guide-form { display: flex; gap: 7px; padding: 2px 10px 10px; flex: none; align-items: center; }
+      .ai-guide-form input {
+        flex: 1; min-width: 0; background: var(--surface);
+        border: 1px solid var(--line); border-radius: 999px; color: var(--ink);
+        font: inherit; font-size: .84rem; padding: 7px 12px;
+      }
+      .ai-guide-form input:focus { outline: 2px solid var(--gold); outline-offset: 1px; border-color: var(--gold); }
+      .ai-guide-send {
+        width: 34px; height: 34px; flex: none; border-radius: 50%;
+        background: var(--gold); color: var(--gold-ink); border: 0;
+        font-size: .92rem; font-weight: 800; cursor: pointer;
+        display: grid; place-items: center;
+      }
+      .ai-guide-send:hover { background: var(--gold-bright); }
+      @media (max-width: 900px) {
+        /* One column: hero returns to its centered layout and the
+           assistant card stacks underneath it in normal flow —
+           still nothing overlapped, nothing covered. */
+        .top-layout { grid-template-columns: 1fr; gap: 6px; }
+        .top-layout .hero { text-align: center; padding: 44px 0 4px; }
+        .top-layout .hero .promise { margin: 0 auto 28px; }
+        .top-layout .hero .cta-row { justify-content: center; }
+        .top-layout .hero .book-note { margin-left: auto; }
+        .ai-guide-card { max-width: 480px; margin: 12px auto 8px; }
+        .ai-guide-msgs { max-height: 210px; }
+      }
+    </style>
+    <style data-hatch-cvm-bundle></style>
+</head>
+  <body>
+    <header>
+      <div class="wrap header-in">
+        <img class="logo-img" data-hatch-src="assets/loona-logo.jpg" alt="Loona Automation golden eagle logo" />
+        <div>
+          <div class="brand-name">Loona Autopilot</div>
+          <div class="brand-sub">Loona Automation</div>
+        </div>
+        <a class="header-cta" href="#book">Book Now</a>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="top-layout">
+      <!-- HERO -->
+      <div class="hero">
+        <span class="hero-badge">AI Office Manager</span>
+        <h1>Loona Autopilot</h1>
+        <p class="tagline">Your entire office, in one system</p>
+        <p class="promise">Your business on auto-pilot — the moment a customer message arrives, the AI understands it, scores it, logs it in a sheet, sends a reply, and alerts the owner.</p>
+        <div class="cta-row">
+          <a class="cta-gold" href="https://www.fiverr.com/loonaautomation" target="_blank" rel="noopener">Order on Fiverr</a>
+          <a class="cta-outline" href="#demo">Try the Live Demo</a>
+        </div>
+        <p class="hero-note">Bookings are open on every platform — Fiverr, Facebook, Instagram, or wherever you found us. Try the live demo below and see for yourself — no sign-up, just type a message and run the system.</p>
+      </div>
+
+      <!-- AI ASSISTANT — Rehan-style dashboard card, top-right column of the content grid (in-flow, never an overlay) -->
+      <aside id="aiGuideCard" class="ai-guide-card" aria-label="AI Assistant">
+        <div class="ai-card-title"><span>AI Assistant</span><span class="ai-card-title-icon" aria-hidden="true">🤖</span></div>
+        <div class="ai-inner">
+          <div class="ai-guide-head">
+            <span class="ai-guide-robot" aria-hidden="true">🤖</span>
+            <div class="ai-guide-title">AI Assistant</div>
+            <button id="aiGuideToggle" class="ai-guide-toggle" type="button" aria-label="Collapse assistant" aria-expanded="true">▾</button>
+          </div>
+          <div class="ai-guide-body">
+            <div id="aiGuideMsgs" class="ai-guide-msgs" aria-live="polite"></div>
+            <div id="aiGuideChips" class="ai-guide-chips"></div>
+            <div class="ai-guide-form">
+              <input id="aiGuideInput" type="text" placeholder="Ask about this system…" autocomplete="off" maxlength="300" aria-label="Ask the assistant a question" />
+              <button id="aiGuideSend" class="ai-guide-send" type="button" aria-label="Send">➤</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+      </div><!-- /top-layout -->
+
+      <!-- DEMO -->
+      <section id="demo">
+        <div class="sec-head">
+          <h2>Live Demo</h2>
+          <p>Type a customer message (or pick a sample below), then press "Run the System". All 6 stages will play out one by one in front of you — exactly the way the real system works.</p>
+        </div>
+
+        <div class="demo-panel">
+          <div class="biz-row">
+            <div class="grow">
+              <label class="field-label" for="bizType">Type of business <span style="color:var(--gold); font-size:.82rem;">(Auto — detected from the message itself)</span></label>
+              <select id="bizType">
+                <option value="Salon" selected>Salon</option>
+                <option value="Shop">Shop</option>
+                <option value="Coaching Center">Coaching Center</option>
+                <option value="Clinic">Clinic</option>
+                <option value="Property Dealer">Property Dealer</option>
+              </select>
+              <p class="biz-auto-hint" id="bizAutoHint" aria-live="polite"></p>
+            </div>
+          </div>
+
+          <label class="field-label" for="msgInput">Write the customer's message</label>
+          <textarea id="msgInput" placeholder="Example: Hello, I want to book a haircut and facial tomorrow at 5 PM. My budget is up to Rs 3,000…"></textarea>
+          <div class="chips" role="group" aria-label="Sample messages">
+            <button type="button" class="chip" data-sample="0">Sample 1 · Salon booking (Roman Urdu)</button>
+            <button type="button" class="chip" data-sample="1">Sample 2 · Shop price (English)</button>
+            <button type="button" class="chip" data-sample="2">Sample 3 · Casual question (Cold)</button>
+          </div>
+          <button type="button" class="run-btn" id="runBtn">▶ Run the System</button>
+          <p class="form-hint" id="formHint">First write a customer message, or pick a sample above.</p>
+
+          <!-- PIPELINE -->
+          <div class="pipeline" id="pipeline" aria-live="polite">
+            <div class="stage" data-stage="0"><div class="num">1</div><div class="st-title">Message Received</div><div class="st-status">Waiting…</div></div>
+            <div class="stage" data-stage="1"><div class="num">2</div><div class="st-title">AI Reads It</div><div class="st-status">Waiting…</div></div>
+            <div class="stage" data-stage="2"><div class="num">3</div><div class="st-title">Lead Score</div><div class="st-status">Waiting…</div></div>
+            <div class="stage" data-stage="3"><div class="num">4</div><div class="st-title">Sheet Entry</div><div class="st-status">Waiting…</div></div>
+            <div class="stage" data-stage="4"><div class="num">5</div><div class="st-title">Reply to Customer</div><div class="st-status">Waiting…</div></div>
+            <div class="stage" data-stage="5"><div class="num">6</div><div class="st-title">Alert to Owner</div><div class="st-status">Waiting…</div></div>
+          </div>
+
+          <!-- RESULTS -->
+          <div class="results" id="results">
+            <div class="card" id="cardUnderstand">
+              <h3><span class="ic">🧠</span> What the AI Understood</h3>
+              <dl class="kv">
+                <dt>Language</dt><dd id="uLang">—</dd>
+                <dt>Intent</dt><dd id="uIntent">—</dd>
+                <dt>Service</dt><dd id="uService">—</dd>
+                <dt>Budget</dt><dd id="uBudget">—</dd>
+                <dt>Time</dt><dd id="uTime">—</dd>
+                <dt>Contact info</dt><dd id="uContact">—</dd>
+              </dl>
+            </div>
+
+            <div class="card" id="cardScore">
+              <h3><span class="ic">🎯</span> Lead Score</h3>
+              <span class="score-badge" id="scoreBadge">—</span>
+              <p class="score-reason" id="scoreReason">—</p>
+            </div>
+
+            <div class="card" id="cardSheet">
+              <h3><span class="ic">📊</span> Sheet Entry (sample Google Sheet)</h3>
+              <div class="sheet-scroll">
+                <table class="sheet">
+                  <thead><tr><th>Name</th><th>Service</th><th>Budget</th><th>Score</th><th>Time</th></tr></thead>
+                  <tbody id="sheetBody">
+                    <tr><td>Ayesha</td><td>Bridal Makeup</td><td>Rs 25,000</td><td><span class="pill pill-Hot">Hot</span></td><td>10:15 AM</td></tr>
+                    <tr><td>Bilal</td><td>Mobile Cover</td><td>—</td><td><span class="pill pill-Cold">Cold</span></td><td>11:02 AM</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card" id="cardReply">
+              <h3><span class="ic">✉️</span> Reply to the Customer</h3>
+              <p class="reply-text" id="replyText">—</p>
+            </div>
+
+            <div class="card" id="cardAlert" style="grid-column: 1 / -1;">
+              <h3><span class="ic">📱</span> Owner Alert (on your phone)</h3>
+              <div class="alert-phone">
+                <div class="alert-head">Loona Autopilot · just now</div>
+                <p class="alert-body" id="alertText">—</p>
+              </div>
+            </div>
+          </div>
+
+          <p class="honesty"><strong>Straight talk:</strong> This is a live DEMO — the real system works exactly like this, connected for you through Make + AI. In this demo, the score and reply are produced by a quick rule engine inside this page; in the real setup, the same work runs through Make with Gemini AI, Google Sheets and Gmail.</p>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section id="how-it-works">
+        <div class="sec-head">
+          <h2>How the System Works</h2>
+          <p>What's inside, in plain words — no technical jargon. The customer sends a message; the system does everything else on its own.</p>
+        </div>
+        <div class="flow">
+          <div class="flow-step"><span class="fi">📩</span><b>Message Received</b><span>From WhatsApp / Form / Page</span></div>
+          <div class="flow-arrow">➜</div>
+          <div class="flow-step"><span class="fi">🧠</span><b>AI Reads It</b><span>Understands language + intent</span></div>
+          <div class="flow-arrow">➜</div>
+          <div class="flow-step"><span class="fi">🎯</span><b>Lead Score</b><span>Hot · Warm · Cold</span></div>
+          <div class="flow-arrow">➜</div>
+          <div class="flow-step"><span class="fi">📊</span><b>Sheet Entry</b><span>Every lead saved</span></div>
+          <div class="flow-arrow">➜</div>
+          <div class="flow-step"><span class="fi">✉️</span><b>Reply Sent</b><span>In the customer's own language</span></div>
+          <div class="flow-arrow">➜</div>
+          <div class="flow-step"><span class="fi">📱</span><b>Owner Alert</b><span>Instant notification</span></div>
+        </div>
+        <div class="inside-list">
+          <div class="inside-item"><b>Webhook — the doorway</b><p>The moment a customer sends a message, the webhook carries it straight into the system. Not a second of delay.</p></div>
+          <div class="inside-item"><b>Gemini AI — the brain</b><p>Google's AI reads the message: what the customer wants, which language they are speaking, and how serious they are.</p></div>
+          <div class="inside-item"><b>Google Sheets — the register</b><p>Every lead is logged automatically — name, service, budget, score. Nothing ever gets lost.</p></div>
+          <div class="inside-item"><b>Gmail / Alerts — the news</b><p>The reply to the customer and the alert to the owner go out on their own. When a Hot lead arrives, the owner knows instantly.</p></div>
+        </div>
+      </section>
+
+      <!-- BENEFITS -->
+      <section id="benefits">
+        <div class="sec-head">
+          <h2>What the Owner Gets</h2>
+          <p>This system is built for the shop or office owner who is tired of answering every message personally.</p>
+        </div>
+        <div class="benefits">
+          <div class="benefit"><span class="bi">🎯</span><h3>No lead ever missed</h3><p>Even a message that arrives at 2 AM is saved in the sheet and answered. Not a single customer slips away.</p></div>
+          <div class="benefit"><span class="bi">⚡</span><h3>Every customer answered instantly</h3><p>The customer gets a reply in their own language — Urdu, Roman Urdu or English — within seconds. A late reply means a lost customer.</p></div>
+          <div class="benefit"><span class="bi">📋</span><h3>Everything in one register</h3><p>All of the day's leads, neatly in one Google Sheet. Who is Hot, who asked for what — the owner sees it all at a glance.</p></div>
+          <div class="benefit"><span class="bi">🌙</span><h3>Works 24/7 — people sleep, the system doesn't</h3><p>Holiday or midnight, the system is always on duty. You rest; the business keeps running.</p></div>
+        </div>
+      </section>
+
+      <div class="final-cta" id="book">
+        <h2>Put your business on auto-pilot</h2>
+        <p>This exact system — connected to your WhatsApp, page or form — can be built for you. Book from wherever you are: a booking can come from any platform, so every door is open.</p>
+        <div class="cta-row">
+          <a class="cta-gold" href="https://www.fiverr.com/loonaautomation" target="_blank" rel="noopener">Order on Fiverr</a>
+          <a class="cta-outline" href="mailto:aurangzebloona@gmail.com?subject=Loona%20Autopilot%20—%20Booking%20Enquiry">Email Us</a>
+        </div>
+        <p class="book-note">You can also reach Loona Automation through Facebook and Instagram — and on any other platform where you see our ad. One message is all it takes to start.</p>
+      </div>
+    </main>
+
+    <footer>
+      <div class="wrap footer-in">
+        <img data-hatch-src="assets/loona-logo.jpg" alt="" />
+        <span class="footer-text">Built by Aurang Zeb Loona | Loona Automation | AI Workflow Automation Specialist</span>
+      </div>
+    </footer>
+
+    
+
+    
+  <script data-hatch-cvm-bundle>(() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  function __accessProp(key) {
+    return this[key];
+  }
+  var __toCommonJS = (from) => {
+    var entry = (__moduleCache ??= new WeakMap).get(from), desc;
+    if (entry)
+      return entry;
+    entry = __defProp({}, "__esModule", { value: true });
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (var key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(entry, key))
+          __defProp(entry, key, {
+            get: __accessProp.bind(from, key),
+            enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+          });
+    }
+    __moduleCache.set(from, entry);
+    return entry;
+  };
+  var __moduleCache;
+
+  // src/prelude.ts
+  var exports_prelude = {};
+
+  // src/tunnel-url.ts
+  var B64_CHUNK = 32768;
+  function computeSelfBaseDir(selfHref) {
+    if (!selfHref)
+      return "";
+    let h = selfHref;
+    const hash = h.indexOf("#");
+    if (hash >= 0)
+      h = h.slice(0, hash);
+    const q = h.indexOf("?");
+    if (q >= 0)
+      h = h.slice(0, q);
+    const slash = h.lastIndexOf("/");
+    return slash >= 0 ? h.slice(0, slash + 1) : "";
+  }
+  function isSelfOriginUrl(u, selfBaseDir, selfHref, objectUrls) {
+    if (!selfBaseDir || !u.startsWith(selfBaseDir))
+      return false;
+    if (u === selfHref)
+      return false;
+    return !objectUrls.has(u);
+  }
+  function isExternalUrl(u, selfBaseDir, selfHref, objectUrls) {
+    if (!u)
+      return false;
+    if (u.startsWith("#"))
+      return true;
+    if (isSelfOriginUrl(u, selfBaseDir, selfHref, objectUrls))
+      return false;
+    if (u.startsWith("data:") || u.startsWith("blob:"))
+      return true;
+    if (u.startsWith("about:") || u.startsWith("javascript:"))
+      return true;
+    if (u.startsWith("//"))
+      return true;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(u)) {
+      return true;
+    }
+    return false;
+  }
+  function normalizeToRelPath(u, selfBaseDir) {
+    let s = u;
+    if (selfBaseDir && s.startsWith(selfBaseDir)) {
+      s = s.slice(selfBaseDir.length);
+    }
+    s = s.replace(/^\.\//, "");
+    s = s.replace(/^\/+/, "");
+    return s;
+  }
+  function blobInner(base, NativeURL) {
+    if (base == null)
+      return null;
+    const s = typeof base === "string" ? base : base instanceof NativeURL ? base.href : String(base);
+    return s.startsWith("blob:") ? s.slice("blob:".length) : null;
+  }
+  var OPAQUE_BLOB_ORIGIN = "https://hatch-cvm-opaque.invalid";
+  function isAbsoluteUrlString(s, NativeURL) {
+    try {
+      new NativeURL(s);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  function resolveAgainstBlobBase(u, base, NativeURL) {
+    const inner = blobInner(base, NativeURL);
+    if (inner === null)
+      return null;
+    if (isAbsoluteUrlString(inner, NativeURL)) {
+      return new NativeURL("blob:" + new NativeURL(u, inner).href);
+    }
+    const slash = inner.indexOf("/");
+    const token = slash >= 0 ? inner.slice(0, slash) : inner;
+    const path = slash >= 0 ? inner.slice(slash) : "/";
+    const resolved = new NativeURL(u, OPAQUE_BLOB_ORIGIN + path);
+    return new NativeURL("blob:" + token + resolved.pathname + resolved.search + resolved.hash);
+  }
+  function resolveTunnelUrl(url, base, selfHref, NativeURL) {
+    const u = url == null ? "" : typeof url === "string" ? url : url instanceof NativeURL ? url.href : String(url);
+    const uAbsolute = /^[a-z][a-z0-9+.-]*:/i.test(u) || u.startsWith("//");
+    if (base !== undefined && base !== null && !uAbsolute) {
+      const viaBlob = resolveAgainstBlobBase(u, base, NativeURL);
+      if (viaBlob !== null)
+        return viaBlob;
+      return new NativeURL(u, base);
+    }
+    if (!uAbsolute && selfHref) {
+      const viaBlob = resolveAgainstBlobBase(u, selfHref, NativeURL);
+      if (viaBlob !== null)
+        return viaBlob;
+    }
+    return base === undefined ? new NativeURL(u) : new NativeURL(u, base);
+  }
+  function bytesToBase64(bytes) {
+    const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+    let s = "";
+    for (let i = 0;i < u8.length; i += B64_CHUNK) {
+      s += String.fromCharCode.apply(null, Array.from(u8.subarray(i, i + B64_CHUNK)));
+    }
+    return btoa(s);
+  }
+  function base64ToBytes(b64) {
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0;i < bin.length; i++)
+      out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function importMetaUrl(selfHref, selfBaseDir) {
+    return selfBaseDir ? `${selfBaseDir}assets/cvm-bundle.js` : selfHref;
+  }
+
+  // src/download-links.ts
+  function installDownloadLinks(fetchAsset, isExternalUrl, revokeDelayMs) {
+    document.addEventListener("click", (event) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+        return;
+      const anchor = event.composedPath().find((node) => node instanceof HTMLAnchorElement);
+      if (!anchor?.hasAttribute("download"))
+        return;
+      const href = anchor.getAttribute("href");
+      if (!href || isExternalUrl(href))
+        return;
+      event.preventDefault();
+      const filename = anchor.download || resourceFilename(href);
+      (async () => {
+        const response = await fetchAsset(href);
+        if (!response.ok) {
+          throw new Error(`Artifact download failed: HTTP ${response.status}`);
+        }
+        const url = URL.createObjectURL(await response.blob());
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        link.hidden = true;
+        document.body.appendChild(link);
+        try {
+          link.click();
+        } finally {
+          link.remove();
+          setTimeout(() => URL.revokeObjectURL(url), revokeDelayMs);
+        }
+      })().catch((error) => reportError(error));
+    });
+  }
+  function resourceFilename(href) {
+    const path = new URL(href, document.baseURI).pathname;
+    const name = path.slice(path.lastIndexOf("/") + 1);
+    try {
+      return decodeURIComponent(name);
+    } catch {
+      return name;
+    }
+  }
+
+  // src/fragment-links.ts
+  function installFragmentLinks() {
+    if (!location.href.startsWith("blob:null/"))
+      return;
+    const NativeURL = URL;
+    const pushState = history.pushState.bind(history);
+    const replaceState = history.replaceState.bind(history);
+    window.addEventListener("click", (event) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+        return;
+      const anchor = event.composedPath().find((node) => node instanceof HTMLAnchorElement);
+      if (!anchor || anchor.hasAttribute("download"))
+        return;
+      const targetName = anchor.getAttribute("target") ?? document.querySelector("base[target]")?.getAttribute("target") ?? "";
+      if (targetName !== "" && targetName.toLowerCase() !== "_self")
+        return;
+      const href = anchor.getAttribute("href");
+      if (!href?.startsWith("#"))
+        return;
+      const oldURL = location.href;
+      const nextURL = new NativeURL(href, oldURL);
+      event.preventDefault();
+      const changed = nextURL.href !== oldURL;
+      if (changed) {
+        pushState(null, "", nextURL.href);
+      } else {
+        replaceState(null, "", nextURL.href);
+      }
+      window.dispatchEvent(new PopStateEvent("popstate", { state: null }));
+      const target = fragmentTarget(nextURL.hash);
+      if (target) {
+        target.scrollIntoView();
+        if (target !== document.documentElement && (target instanceof HTMLElement || target instanceof SVGElement)) {
+          const hadTabIndex = target.hasAttribute("tabindex");
+          if (!hadTabIndex)
+            target.setAttribute("tabindex", "-1");
+          target.focus({ preventScroll: true });
+          if (!hadTabIndex)
+            target.removeAttribute("tabindex");
+        }
+      }
+      if (changed) {
+        queueMicrotask(() => window.dispatchEvent(new HashChangeEvent("hashchange", {
+          oldURL,
+          newURL: nextURL.href
+        })));
+      }
+    });
+  }
+  function fragmentTarget(hash) {
+    const bytes = hash.slice(1).replace(/%([0-9a-f]{2})/gi, (_match, hex) => String.fromCharCode(parseInt(hex, 16)));
+    const fragment = new TextDecoder().decode(Uint8Array.from(bytes, (byte) => byte.charCodeAt(0)));
+    if (fragment === "")
+      return document.documentElement;
+    const idTarget = document.getElementById(fragment);
+    if (idTarget)
+      return idTarget;
+    const namedTarget = Array.from(document.getElementsByName(fragment)).find((node) => node instanceof HTMLAnchorElement);
+    return namedTarget ?? (fragment.toLowerCase() === "top" ? document.documentElement : null);
+  }
+
+  // src/prelude.ts
+  (function installTunnel() {
+    installFragmentLinks();
+    let port = null;
+    let portReadyResolve = null;
+    const portReady = new Promise((res) => {
+      portReadyResolve = res;
+    });
+    const pending = new Map;
+    const openWs = new Map;
+    function newId() {
+      return Math.random().toString(36).slice(2) + "-" + Date.now().toString(36);
+    }
+    function bytesToB64(bytes) {
+      return bytesToBase64(bytes);
+    }
+    function b64ToBytes(b64) {
+      return base64ToBytes(b64);
+    }
+    async function httpReq(method, path, body, headers) {
+      const p = port ?? await portReady;
+      const id = newId();
+      const headerArr = [];
+      if (headers) {
+        const h = new Headers(headers);
+        h.forEach((v, k) => headerArr.push([k, v]));
+      }
+      let bodyB64 = "";
+      if (body != null && body !== "") {
+        let bytes;
+        if (typeof body === "string") {
+          bytes = new TextEncoder().encode(body);
+        } else if (body instanceof ArrayBuffer) {
+          bytes = new Uint8Array(body);
+        } else if (body instanceof Uint8Array) {
+          bytes = body;
+        } else if (body instanceof Blob) {
+          bytes = new Uint8Array(await body.arrayBuffer());
+        } else if (body instanceof FormData) {
+          const boundary = "----HatchBoundary" + Math.random().toString(36).slice(2);
+          let s = "";
+          for (const [k, v] of body.entries()) {
+            s += `--${boundary}\r
+Content-Disposition: form-data; name="${k}"`;
+            if (v instanceof File) {
+              s += `; filename="${v.name}"\r
+Content-Type: ${v.type || "application/octet-stream"}\r
+\r
+`;
+              const fb = new Uint8Array(await v.arrayBuffer());
+              s += new TextDecoder("latin1").decode(fb);
+            } else {
+              s += `\r
+\r
+${v}`;
+            }
+            s += `\r
+`;
+          }
+          s += `--${boundary}--\r
+`;
+          bytes = new TextEncoder().encode(s);
+          headerArr.push([
+            "content-type",
+            `multipart/form-data; boundary=${boundary}`
+          ]);
+        } else {
+          bytes = new TextEncoder().encode(String(body));
+        }
+        bodyB64 = bytesToB64(bytes);
+      }
+      return new Promise((resolve, reject) => {
+        pending.set(id, {
+          resolve: (msg) => {
+            if (msg.error) {
+              reject(new Error(msg.error.message ?? "tunnel error"));
+              return;
+            }
+            resolve({
+              status: msg.status,
+              headers: msg.headers,
+              bytes: msg.bodyB64 ? b64ToBytes(msg.bodyB64) : new Uint8Array(0)
+            });
+          },
+          reject
+        });
+        p.postMessage({
+          type: "http.req",
+          id,
+          method,
+          path,
+          headers: headerArr,
+          bodyB64
+        });
+      });
+    }
+    async function tunnelFetch(input, init) {
+      let urlStr;
+      let method = init?.method ?? "GET";
+      let headers = init?.headers;
+      let body = init?.body;
+      if (input instanceof Request) {
+        urlStr = input.url;
+        method = init?.method ?? input.method;
+        headers = init?.headers ?? input.headers;
+        if (body == null && input.body) {
+          body = await input.arrayBuffer();
+        }
+      } else {
+        urlStr = String(input);
+      }
+      if (isExternalUrl2(urlStr)) {
+        return originalFetch(input, init);
+      }
+      const relPath = normalizeToRelPath2(urlStr);
+      const r = await httpReq(method, relPath, body ?? null, headers);
+      const respHeaders = new Headers;
+      for (const [k, v] of r.headers ?? [])
+        respHeaders.set(k, v);
+      return new Response(r.bytes, {
+        status: r.status,
+        headers: respHeaders
+      });
+    }
+
+    class TunnelWebSocket extends EventTarget {
+      readyState = 0;
+      static CONNECTING = 0;
+      static OPEN = 1;
+      static CLOSING = 2;
+      static CLOSED = 3;
+      CONNECTING = 0;
+      OPEN = 1;
+      CLOSING = 2;
+      CLOSED = 3;
+      url;
+      binaryType = "blob";
+      bufferedAmount = 0;
+      protocol = "";
+      extensions = "";
+      onopen = null;
+      onmessage = null;
+      onclose = null;
+      onerror = null;
+      _id;
+      constructor(urlIn, _protocols) {
+        super();
+        const urlStr = String(urlIn);
+        this.url = urlStr;
+        this._id = newId();
+        openWs.set(this._id, this);
+        const path = normalizeToRelPath2(urlStr);
+        (async () => {
+          const p = port ?? await portReady;
+          p.postMessage({ type: "ws.open", id: this._id, path });
+        })();
+      }
+      _handle(msg) {
+        if (msg.type === "ws.opened") {
+          this.readyState = 1;
+          const ev = new Event("open");
+          this.onopen?.(ev);
+          this.dispatchEvent(ev);
+        } else if (msg.type === "ws.message") {
+          const bytes = msg.dataB64 ? b64ToBytes(msg.dataB64) : new Uint8Array(0);
+          let data;
+          if (msg.binary) {
+            data = this.binaryType === "arraybuffer" ? bytes.buffer : new Blob([bytes]);
+          } else {
+            data = new TextDecoder().decode(bytes);
+          }
+          const ev = new MessageEvent("message", { data });
+          this.onmessage?.(ev);
+          this.dispatchEvent(ev);
+        } else if (msg.type === "ws.closed") {
+          this.readyState = 3;
+          const ev = new CloseEvent("close", {
+            code: msg.code ?? 1000,
+            reason: msg.reason ?? ""
+          });
+          this.onclose?.(ev);
+          this.dispatchEvent(ev);
+          openWs.delete(this._id);
+        } else if (msg.type === "ws.error") {
+          const ev = new Event("error");
+          this.onerror?.(ev);
+          this.dispatchEvent(ev);
+        }
+      }
+      send(data) {
+        (async () => {
+          const p = port ?? await portReady;
+          let bytes;
+          let binary = false;
+          if (typeof data === "string") {
+            bytes = new TextEncoder().encode(data);
+          } else if (data instanceof Blob) {
+            bytes = new Uint8Array(await data.arrayBuffer());
+            binary = true;
+          } else if (data instanceof ArrayBuffer) {
+            bytes = new Uint8Array(data);
+            binary = true;
+          } else if (ArrayBuffer.isView(data)) {
+            bytes = new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+            binary = true;
+          } else {
+            bytes = new TextEncoder().encode(String(data));
+          }
+          p.postMessage({
+            type: "ws.send",
+            id: this._id,
+            dataB64: bytesToB64(bytes),
+            binary
+          });
+        })();
+      }
+      close(code, reason) {
+        (async () => {
+          const p = port ?? await portReady;
+          p.postMessage({ type: "ws.close", id: this._id, code, reason });
+        })();
+      }
+      addEventListener(type, listener, options) {
+        super.addEventListener(type, listener, options);
+      }
+    }
+
+    class TunnelXHR extends EventTarget {
+      static UNSENT = 0;
+      static OPENED = 1;
+      static HEADERS_RECEIVED = 2;
+      static LOADING = 3;
+      static DONE = 4;
+      UNSENT = 0;
+      OPENED = 1;
+      HEADERS_RECEIVED = 2;
+      LOADING = 3;
+      DONE = 4;
+      readyState = 0;
+      status = 0;
+      statusText = "";
+      responseText = "";
+      response = null;
+      responseType = "";
+      responseURL = "";
+      withCredentials = false;
+      timeout = 0;
+      upload = new EventTarget;
+      onreadystatechange = null;
+      onload = null;
+      onerror = null;
+      onloadend = null;
+      onabort = null;
+      onprogress = null;
+      ontimeout = null;
+      _method = "GET";
+      _url = "";
+      _reqHeaders = [];
+      _respHeaders = [];
+      _aborted = false;
+      open(method, url) {
+        this._method = method;
+        this._url = url;
+        this.readyState = 1;
+        this.onreadystatechange?.();
+      }
+      setRequestHeader(name, value) {
+        this._reqHeaders.push([name, value]);
+      }
+      getAllResponseHeaders() {
+        return this._respHeaders.map(([k, v]) => `${k}: ${v}`).join(`\r
+`);
+      }
+      getResponseHeader(name) {
+        const lc = name.toLowerCase();
+        const hit = this._respHeaders.find(([k]) => k.toLowerCase() === lc);
+        return hit ? hit[1] : null;
+      }
+      abort() {
+        this._aborted = true;
+        this.readyState = 0;
+      }
+      send(body) {
+        if (isExternalUrl2(this._url)) {
+          const real = new originalXHR;
+          real.open(this._method, this._url);
+          for (const [k, v] of this._reqHeaders)
+            real.setRequestHeader(k, v);
+          real.onload = () => {
+            this.status = real.status;
+            this.responseText = real.responseText;
+            this.response = real.response;
+            this.readyState = 4;
+            this.onreadystatechange?.();
+            this.onload?.();
+            this.onloadend?.();
+            this.dispatchEvent(new Event("load"));
+          };
+          real.onerror = () => {
+            this.onerror?.();
+            this.dispatchEvent(new Event("error"));
+          };
+          real.send(body);
+          return;
+        }
+        const relPath = normalizeToRelPath2(this._url);
+        httpReq(this._method, relPath, body ?? null, this._reqHeaders).then((r) => {
+          if (this._aborted)
+            return;
+          this.status = r.status;
+          this._respHeaders = r.headers ?? [];
+          this.responseText = new TextDecoder().decode(r.bytes);
+          if (this.responseType === "arraybuffer") {
+            this.response = r.bytes.buffer;
+          } else if (this.responseType === "blob") {
+            this.response = new Blob([r.bytes]);
+          } else if (this.responseType === "json") {
+            try {
+              this.response = JSON.parse(this.responseText);
+            } catch {
+              this.response = null;
+            }
+          } else {
+            this.response = this.responseText;
+          }
+          this.readyState = 4;
+          this.onreadystatechange?.();
+          this.onload?.();
+          this.onloadend?.();
+          this.dispatchEvent(new Event("load"));
+        }, () => {
+          if (this._aborted)
+            return;
+          this.onerror?.();
+          this.dispatchEvent(new Event("error"));
+        });
+      }
+    }
+
+    class TunnelEventSource extends EventTarget {
+      static CONNECTING = 0;
+      static OPEN = 1;
+      static CLOSED = 2;
+      readyState = 0;
+      url;
+      withCredentials = false;
+      onopen = null;
+      onmessage = null;
+      onerror = null;
+      constructor(url) {
+        super();
+        this.url = String(url);
+        (async () => {
+          try {
+            const relPath = normalizeToRelPath2(this.url);
+            const r = await httpReq("GET", relPath, null, [
+              ["accept", "text/event-stream"]
+            ]);
+            this.readyState = 1;
+            this.onopen?.(new Event("open"));
+            const text = new TextDecoder().decode(r.bytes);
+            for (const block of text.split(/\n\n/)) {
+              const data = block.split(`
+`).filter((l) => l.startsWith("data:")).map((l) => l.slice(5).trim()).join(`
+`);
+              if (data) {
+                const ev = new MessageEvent("message", { data });
+                this.onmessage?.(ev);
+                this.dispatchEvent(ev);
+              }
+            }
+            this.readyState = 2;
+          } catch {
+            this.onerror?.(new Event("error"));
+          }
+        })();
+      }
+      close() {
+        this.readyState = 2;
+      }
+    }
+    const SELF_HREF = (() => {
+      try {
+        return globalThis.location?.href ?? "";
+      } catch {
+        return "";
+      }
+    })();
+    const SELF_BASE_DIR = computeSelfBaseDir(SELF_HREF);
+    const objectUrls = new Set;
+    function isSelfOriginUrl2(u) {
+      return isSelfOriginUrl(u, SELF_BASE_DIR, SELF_HREF, objectUrls);
+    }
+    function isExternalUrl2(u) {
+      return isExternalUrl(u, SELF_BASE_DIR, SELF_HREF, objectUrls);
+    }
+    function normalizeToRelPath2(u) {
+      return normalizeToRelPath(u, SELF_BASE_DIR);
+    }
+    const URL_ATTRS = new Set([
+      "src",
+      "srcset",
+      "href",
+      "poster",
+      "action",
+      "formaction",
+      "data",
+      "background",
+      "cite",
+      "longdesc",
+      "usemap",
+      "manifest"
+    ]);
+    const URL_STYLE_PROPS = new Set([
+      "background",
+      "backgroundImage",
+      "background-image",
+      "borderImage",
+      "border-image",
+      "borderImageSource",
+      "border-image-source",
+      "listStyle",
+      "list-style",
+      "listStyleImage",
+      "list-style-image",
+      "cursor",
+      "mask",
+      "maskImage",
+      "mask-image",
+      "webkitMask",
+      "-webkit-mask",
+      "webkitMaskImage",
+      "-webkit-mask-image",
+      "content",
+      "src"
+    ]);
+    const __BLOB_CACHE_MAX = 256;
+    const __BLOB_REVOKE_DELAY_MS = 30000;
+    const blobCache = new Map;
+    const blobStats = {
+      created: 0,
+      revoked: 0,
+      hits: 0,
+      misses: 0,
+      inFlightRevokes: 0
+    };
+    function __evictIfOverCap() {
+      while (blobCache.size > __BLOB_CACHE_MAX) {
+        const oldestKey = blobCache.keys().next().value;
+        if (oldestKey === undefined)
+          break;
+        const ent = blobCache.get(oldestKey);
+        blobCache.delete(oldestKey);
+        blobStats.inFlightRevokes++;
+        const t = setTimeout(() => {
+          ent.url.then((u) => {
+            if (typeof u === "string" && u.startsWith("blob:")) {
+              try {
+                URL.revokeObjectURL(u);
+                blobStats.revoked++;
+              } catch {}
+            }
+          }).finally(() => {
+            blobStats.inFlightRevokes--;
+          });
+        }, __BLOB_REVOKE_DELAY_MS);
+        ent.pendingRevoke = t;
+      }
+    }
+    function resolveToBlobUrl(rel) {
+      if (isExternalUrl2(rel))
+        return Promise.resolve(rel);
+      const hashIdx = rel.indexOf("#");
+      const pathPart = hashIdx >= 0 ? rel.slice(0, hashIdx) : rel;
+      const frag = hashIdx >= 0 ? rel.slice(hashIdx) : "";
+      const key = normalizeToRelPath2(pathPart);
+      let ent = blobCache.get(key);
+      if (ent) {
+        if (ent.pendingRevoke != null) {
+          clearTimeout(ent.pendingRevoke);
+          ent.pendingRevoke = undefined;
+          blobStats.inFlightRevokes--;
+        }
+        blobCache.delete(key);
+        blobCache.set(key, ent);
+        blobStats.hits++;
+      } else {
+        blobStats.misses++;
+        const url = httpReq("GET", key, null).then((r) => {
+          const ctHeader = r.headers.find(([k]) => k.toLowerCase() === "content-type");
+          const ct = ctHeader?.[1] ?? "application/octet-stream";
+          const blob = new Blob([r.bytes], { type: ct });
+          blobStats.created++;
+          return URL.createObjectURL(blob);
+        });
+        ent = { url };
+        blobCache.set(key, ent);
+        __evictIfOverCap();
+      }
+      return frag ? ent.url.then((b) => b + frag) : ent.url;
+    }
+    const HATCH_PIXEL_PREFIX = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+    const HATCH_FRAG = "#hatch=";
+    function isHatchPlaceholder(url) {
+      return url.indexOf(HATCH_PIXEL_PREFIX + HATCH_FRAG) === 0;
+    }
+    function unwrapHatchPlaceholder(url) {
+      if (!isHatchPlaceholder(url))
+        return null;
+      return decodeURIComponent(url.slice((HATCH_PIXEL_PREFIX + HATCH_FRAG).length));
+    }
+    async function rewriteCssTextAsync(text) {
+      const re = /url\(\s*(['"]?)([^'")]+)\1\s*\)/g;
+      const tasks = [];
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        tasks.push({ match: m[0], index: m.index, url: m[2].trim() });
+      }
+      if (tasks.length === 0)
+        return text;
+      const resolved = await Promise.all(tasks.map(async (t) => {
+        if (t.url.startsWith("blob:"))
+          return t.url;
+        const unwrapped = unwrapHatchPlaceholder(t.url);
+        if (unwrapped != null) {
+          try {
+            return await resolveToBlobUrl(unwrapped);
+          } catch {
+            return t.url;
+          }
+        }
+        if (isExternalUrl2(t.url))
+          return t.url;
+        try {
+          return await resolveToBlobUrl(t.url);
+        } catch {
+          return t.url;
+        }
+      }));
+      let out = "";
+      let last = 0;
+      tasks.forEach((t, i) => {
+        out += text.slice(last, t.index);
+        out += `url("${resolved[i]}")`;
+        last = t.index + t.match.length;
+      });
+      out += text.slice(last);
+      return out;
+    }
+    function rewriteCssText(text) {
+      return rewriteCssTextAsync(text);
+    }
+    const mediaSourceLoads = new WeakMap;
+    window.addEventListener("error", (event) => {
+      const source = event.target;
+      if (!event.isTrusted || !(source instanceof HTMLSourceElement) || !(source.parentElement instanceof HTMLMediaElement) || source.hasAttribute("src"))
+        return;
+      const state = mediaSourceLoads.get(source);
+      if (state === "pending" || state === undefined && source.hasAttribute("data-hatch-src")) {
+        event.stopImmediatePropagation();
+      }
+    }, true);
+    function isElement(el) {
+      if (el instanceof Element)
+        return true;
+      const ownerWindow = el?.ownerDocument?.defaultView;
+      return ownerWindow != null && el instanceof ownerWindow.Element;
+    }
+    function setAttr(el, name, value, ...rest) {
+      if (!isElement(el)) {
+        return el.setAttribute(name, value, ...rest);
+      }
+      name = String(name);
+      if (value == null) {
+        if (name.toLowerCase() === "src" && el instanceof HTMLSourceElement) {
+          mediaSourceLoads.set(el, "settled");
+        }
+        try {
+          el.removeAttribute(name);
+        } catch {}
+        return;
+      }
+      const v = String(value);
+      const lcName = name.toLowerCase();
+      const tag = el.tagName?.toUpperCase();
+      if ((tag === "A" || tag === "BASE" || tag === "AREA") && lcName === "href") {
+        el.setAttribute(name, v);
+        return;
+      }
+      if (!URL_ATTRS.has(lcName) && lcName !== "style" && lcName !== "srcset") {
+        el.setAttribute(name, v);
+        return;
+      }
+      if (lcName === "srcset") {
+        const parts = v.split(",").map((s) => s.trim()).filter(Boolean);
+        Promise.all(parts.map(async (p) => {
+          const segs = p.split(/\s+/);
+          const url = segs[0];
+          const rest = segs.slice(1).join(" ");
+          if (isExternalUrl2(url))
+            return p;
+          const resolved = await resolveToBlobUrl(url);
+          return rest ? `${resolved} ${rest}` : resolved;
+        })).then((rebuilt) => {
+          try {
+            el.setAttribute("srcset", rebuilt.join(", "));
+          } catch {}
+        });
+        return;
+      }
+      if (URL_ATTRS.has(lcName)) {
+        const isMediaSource = tag === "SOURCE" && lcName === "src";
+        if (isExternalUrl2(v)) {
+          if (isMediaSource)
+            mediaSourceLoads.set(el, "settled");
+          el.setAttribute(name, v);
+          return;
+        }
+        if (isMediaSource)
+          mediaSourceLoads.set(el, "pending");
+        if (tag === "IMG" || tag === "VIDEO" && lcName === "poster") {
+          el.setAttribute(name, TRANSPARENT_PIXEL);
+        }
+        resolveToBlobUrl(v).then((blobUrl) => {
+          if (isMediaSource)
+            mediaSourceLoads.set(el, "settled");
+          try {
+            el.setAttribute(name, blobUrl);
+            if (isMediaSource) {
+              const media = el.parentElement;
+              if (media instanceof HTMLMediaElement && media.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
+                const nextSibling = el.nextSibling;
+                el.remove();
+                media.insertBefore(el, nextSibling);
+              }
+            }
+          } catch {}
+        }, () => {
+          if (isMediaSource) {
+            mediaSourceLoads.set(el, "settled");
+            el.dispatchEvent(new Event("error"));
+          }
+        });
+        return;
+      }
+      if (lcName === "style") {
+        setStyleAttr(el, v);
+        return;
+      }
+      el.setAttribute(name, v);
+    }
+    function setAttrNS(el, ns, name, value, ...rest) {
+      if (!isElement(el)) {
+        return el.setAttributeNS(ns, name, value, ...rest);
+      }
+      name = String(name);
+      if (value == null) {
+        try {
+          el.removeAttributeNS(ns ?? null, name);
+        } catch {}
+        return;
+      }
+      const v = String(value);
+      const lcName = name.split(":").pop().toLowerCase();
+      if (lcName === "href" && URL_ATTRS.has("href")) {
+        if (isExternalUrl2(v)) {
+          el.setAttributeNS(ns ?? null, name, v);
+          return;
+        }
+        resolveToBlobUrl(v).then((blobUrl) => {
+          try {
+            el.setAttributeNS(ns ?? null, name, blobUrl);
+          } catch {}
+        }, () => {});
+        return;
+      }
+      try {
+        el.setAttributeNS(ns ?? null, name, v);
+      } catch {}
+    }
+    function setUrlProp(el, name, value) {
+      if (isElement(el)) {
+        setAttr(el, name.toLowerCase(), value);
+      } else {
+        el[name] = value;
+      }
+      return value;
+    }
+    const TRANSPARENT_PIXEL = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+    const HTML_TAG_ATTRS = {
+      img: ["src", "srcset", "poster"],
+      image: ["href"],
+      video: ["src", "poster"],
+      audio: ["src"],
+      source: ["src", "srcset"],
+      script: ["src"],
+      link: ["href"],
+      iframe: ["src"],
+      embed: ["src"],
+      object: ["data"],
+      track: ["src"],
+      input: ["src"],
+      form: ["action"],
+      button: ["formaction"],
+      use: ["href"]
+    };
+    function rewriteHtmlString(html) {
+      return html.replace(/<([a-zA-Z][a-zA-Z0-9-]*)\b([^>]*)>/g, (m, tag, attrs) => {
+        const lc = String(tag).toLowerCase();
+        const candidates = HTML_TAG_ATTRS[lc];
+        if (!candidates)
+          return m;
+        let out = attrs;
+        for (const a of candidates) {
+          const re = new RegExp(`\\b${a}\\s*=\\s*("([^"]*)"|'([^']*)'|([^\\s>]+))`, "i");
+          const matched = out.match(re);
+          if (!matched)
+            continue;
+          const value = matched[2] ?? matched[3] ?? matched[4] ?? "";
+          if (isExternalUrl2(value))
+            continue;
+          out = out.replace(re, `data-hatch-${a}="${value.replace(/"/g, "&quot;")}"`);
+        }
+        const styleRe = /\bstyle\s*=\s*("([^"]*)"|'([^']*)')/i;
+        const sm = out.match(styleRe);
+        if (sm) {
+          const value = sm[2] ?? sm[3] ?? "";
+          if (value.includes("url(")) {
+            out = out.replace(styleRe, `data-hatch-style="${value.replace(/"/g, "&quot;")}"`);
+          }
+        }
+        return `<${tag}${out}>`;
+      });
+    }
+    const HTML_URL_ATTRS_BY_TAG = {
+      IMG: ["src", "srcset", "poster"],
+      IMAGE: ["href"],
+      VIDEO: ["src", "poster"],
+      AUDIO: ["src"],
+      SOURCE: ["src", "srcset"],
+      SCRIPT: ["src"],
+      LINK: ["href"],
+      IFRAME: ["src"],
+      EMBED: ["src"],
+      OBJECT: ["data"],
+      TRACK: ["src"],
+      INPUT: ["src"],
+      FORM: ["action"],
+      BUTTON: ["formaction"],
+      USE: ["href", "xlink:href"]
+    };
+    function rewriteSubtreeForTunnel(root) {
+      if (!root)
+        return;
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+      let n = walker.currentNode;
+      if (root.nodeType === 1)
+        processOne(root);
+      while (n = walker.nextNode()) {
+        processOne(n);
+      }
+    }
+    function processOne(el) {
+      const tag = (el.tagName ?? "").toUpperCase();
+      const attrs = HTML_URL_ATTRS_BY_TAG[tag];
+      if (attrs) {
+        for (const a of attrs) {
+          const v = el.getAttribute(a);
+          if (v == null)
+            continue;
+          if (isExternalUrl2(v))
+            continue;
+          el.setAttribute("data-hatch-" + a, v);
+          el.removeAttribute(a);
+        }
+      }
+      const style = el.getAttribute("style");
+      if (style && style.includes("url(")) {
+        el.setAttribute("data-hatch-style", style);
+        el.removeAttribute("style");
+      }
+    }
+    function parseAndCleanHtml(html) {
+      const tpl = document.createElement("template");
+      tpl.innerHTML = html;
+      rewriteSubtreeForTunnel(tpl.content);
+      return tpl.content;
+    }
+    function setInnerHTML(el, html, which = "innerHTML") {
+      const s = html == null ? "" : String(html);
+      if (which === "innerHTML" && typeof el.tagName === "string" && el.tagName.toUpperCase() === "TEMPLATE") {
+        try {
+          el.innerHTML = s;
+        } catch {}
+        return;
+      }
+      if (which === "outerHTML") {
+        const frag = parseAndCleanHtml(s);
+        const wrap = document.createElement("div");
+        wrap.appendChild(frag);
+        try {
+          el.outerHTML = wrap.innerHTML;
+        } catch {}
+        queueMicrotask(() => processDataHatchAttrs(document.body));
+        return;
+      }
+      const frag = parseAndCleanHtml(s);
+      try {
+        while (el.firstChild)
+          el.removeChild(el.firstChild);
+        el.appendChild(frag);
+      } catch {}
+      queueMicrotask(() => processDataHatchAttrs(el));
+    }
+    function insertAdjacentHTMLT(el, position, html) {
+      const s = html == null ? "" : String(html);
+      const frag = parseAndCleanHtml(s);
+      const wrap = document.createElement("template");
+      wrap.content.appendChild(frag);
+      try {
+        el.insertAdjacentHTML(position, wrap.innerHTML);
+      } catch {}
+      queueMicrotask(() => processDataHatchAttrs(document.body));
+    }
+    function processDataHatchAttrs(root) {
+      const SELECTORS = "[data-hatch-src], [data-hatch-href], [data-hatch-srcset], [data-hatch-poster], [data-hatch-action], [data-hatch-data], [data-hatch-style]";
+      root.querySelectorAll(SELECTORS).forEach((el) => {
+        const attrs = el.getAttributeNames();
+        for (const a of attrs) {
+          if (!a.startsWith("data-hatch-"))
+            continue;
+          const real = a.slice("data-hatch-".length);
+          const value = el.getAttribute(a) ?? "";
+          el.removeAttribute(a);
+          if (real === "style")
+            setStyleAttr(el, value);
+          else
+            setAttr(el, real, value);
+        }
+      });
+    }
+    const styleProxyCache = new WeakMap;
+    function getStyle(el) {
+      if (el == null)
+        return el;
+      let real;
+      try {
+        real = el.style;
+      } catch {
+        return;
+      }
+      if (real == null || typeof real !== "object" && typeof real !== "function") {
+        return real;
+      }
+      let proxy = styleProxyCache.get(real);
+      if (proxy)
+        return proxy;
+      proxy = new Proxy(real, {
+        get(target, prop, _receiver) {
+          const v = Reflect.get(target, prop, target);
+          if (typeof v === "function")
+            return v.bind(target);
+          return v;
+        },
+        set(target, prop, value) {
+          if (typeof prop === "string") {
+            setStyle(el, prop, value);
+            return true;
+          }
+          return Reflect.set(target, prop, value, target);
+        }
+      });
+      styleProxyCache.set(real, proxy);
+      return proxy;
+    }
+    function setStyle(el, propName, value) {
+      const v = value == null ? "" : String(value);
+      if (propName.startsWith("--")) {
+        rewriteCssText(v).then((rewritten) => {
+          try {
+            el.style.setProperty(propName, rewritten);
+          } catch {}
+        });
+        return;
+      }
+      if (URL_STYLE_PROPS.has(propName) && v.includes("url(")) {
+        rewriteCssText(v).then((rewritten) => {
+          try {
+            el.style[propName] = rewritten;
+          } catch {}
+        });
+        return;
+      }
+      try {
+        el.style[propName] = v;
+      } catch {}
+    }
+    function setStyleAttr(el, attrValue) {
+      if (!attrValue.includes("url(")) {
+        el.setAttribute("style", attrValue);
+        return;
+      }
+      rewriteCssText(attrValue).then((rewritten) => {
+        try {
+          el.setAttribute("style", rewritten);
+        } catch {}
+      });
+    }
+    function setStyleText(styleEl, text) {
+      if (!(styleEl instanceof HTMLStyleElement)) {
+        try {
+          styleEl.textContent = text;
+        } catch {}
+        return;
+      }
+      if (!text.includes("url(")) {
+        styleEl.textContent = text;
+        return;
+      }
+      rewriteCssText(text).then((rewritten) => {
+        try {
+          styleEl.textContent = rewritten;
+        } catch {}
+      });
+    }
+    function tunnelImage(_w, _h) {
+      const img = new originalImage;
+      const desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src");
+      if (desc?.set) {
+        const origSet = desc.set;
+        const origGet = desc.get;
+        Object.defineProperty(img, "src", {
+          configurable: true,
+          get() {
+            return origGet.call(img);
+          },
+          set(v) {
+            if (v == null)
+              return origSet.call(img, "");
+            const s = String(v);
+            if (isExternalUrl2(s))
+              return origSet.call(img, s);
+            resolveToBlobUrl(s).then((b) => origSet.call(img, b), () => origSet.call(img, s));
+          }
+        });
+      }
+      return img;
+    }
+    function tunnelSendBeacon(url, data) {
+      tunnelFetch(url, { method: "POST", body: data, keepalive: true }).catch(() => {});
+      return true;
+    }
+    function tunnelWorker(_url) {
+      throw new Error("[__tunnel] new Worker() is not supported in Muse web artifacts.");
+    }
+    function tunnelImport(spec) {
+      throw new Error("[__tunnel] dynamic import() of '" + String(spec) + "' is not supported in Muse web artifacts.");
+    }
+    function installCssObserver() {
+      try {
+        const proto = window.CSSStyleSheet?.prototype;
+        if (proto) {
+          const origInsertRule = proto.insertRule;
+          proto.insertRule = function(rule, index) {
+            if (typeof rule === "string" && rule.includes("url(")) {
+              const idx = origInsertRule.call(this, rule, index);
+              rewriteCssText(rule).then((rewritten) => {
+                if (rewritten !== rule) {
+                  try {
+                    this.deleteRule(idx);
+                    origInsertRule.call(this, rewritten, idx);
+                  } catch {}
+                }
+              });
+              return idx;
+            }
+            return origInsertRule.call(this, rule, index);
+          };
+          const origReplace = proto.replace;
+          if (origReplace) {
+            proto.replace = function(text) {
+              if (typeof text === "string" && text.includes("url(")) {
+                return rewriteCssText(text).then((rewritten) => origReplace.call(this, rewritten));
+              }
+              return origReplace.call(this, text);
+            };
+          }
+          const origReplaceSync = proto.replaceSync;
+          if (origReplaceSync) {
+            proto.replaceSync = function(text) {
+              if (typeof text === "string" && text.includes("url(")) {
+                const ret = origReplaceSync.call(this, text);
+                rewriteCssText(text).then((rewritten) => {
+                  try {
+                    origReplaceSync.call(this, rewritten);
+                  } catch {}
+                });
+                return ret;
+              }
+              return origReplaceSync.call(this, text);
+            };
+          }
+        }
+      } catch (e) {}
+      function sweepSheet(sheet) {
+        try {
+          const rules = sheet.cssRules;
+          for (let i = 0;i < rules.length; i++) {
+            const rule = rules[i];
+            const txt = rule.cssText;
+            if (txt && (txt.includes(HATCH_FRAG) || txt.includes("url(") && !/url\(\s*["']?(blob:|https?:|data:image\/gif;base64,R0)/.test(txt))) {
+              rewriteCssText(txt).then((rewritten) => {
+                if (rewritten !== txt) {
+                  try {
+                    sheet.deleteRule(i);
+                    sheet.insertRule(rewritten, i);
+                  } catch {}
+                }
+              });
+            }
+          }
+        } catch {}
+      }
+      function sweepAll() {
+        for (const sheet of Array.from(document.styleSheets)) {
+          sweepSheet(sheet);
+        }
+      }
+      const mo = new MutationObserver((mutations) => {
+        for (const m of mutations) {
+          for (const node of Array.from(m.addedNodes)) {
+            if (node instanceof HTMLStyleElement) {
+              const txt = node.textContent ?? "";
+              if (txt.includes("url(")) {
+                rewriteCssText(txt).then((rewritten) => {
+                  if (rewritten !== txt) {
+                    try {
+                      node.textContent = rewritten;
+                    } catch {}
+                  }
+                });
+              }
+            } else if (node instanceof HTMLLinkElement && node.rel === "stylesheet") {
+              node.addEventListener("load", () => sweepSheet(node.sheet), { once: true });
+            }
+          }
+        }
+      });
+      mo.observe(document, { subtree: true, childList: true });
+      Promise.resolve().then(sweepAll);
+      setTimeout(sweepAll, 0);
+      setTimeout(sweepAll, 50);
+      setTimeout(sweepAll, 250);
+    }
+    function rewriteAuthoredHtml() {
+      const SELECTORS = "[data-hatch-src], [data-hatch-href], [data-hatch-srcset]";
+      document.querySelectorAll(SELECTORS).forEach((el) => {
+        const src = el.getAttribute("data-hatch-src");
+        const href = el.getAttribute("data-hatch-href");
+        const srcset = el.getAttribute("data-hatch-srcset");
+        if (src)
+          setAttr(el, "src", src);
+        if (href)
+          setAttr(el, "href", href);
+        if (srcset)
+          setAttr(el, "srcset", srcset);
+      });
+    }
+    let historyUrlWarned = false;
+    function warnHistoryUrlDropped(method, url) {
+      if (url === undefined || url === null)
+        return;
+      if (historyUrlWarned)
+        return;
+      historyUrlWarned = true;
+      try {
+        console.warn("[__tunnel] history." + method + "() was called with a URL; the URL was ignored. A Muse web artifact " + "renders in an opaque origin with no navigable URL of its own, so " + "the browser rejects any URL change. State kept in the URL will not " + "persist or survive a reload — keep it in component state, or in " + "the artifact's database through a server action.");
+      } catch {}
+    }
+    const originalFetch = globalThis.fetch?.bind(globalThis) ?? (() => {
+      throw new Error("no native fetch");
+    });
+    const originalXHR = globalThis.XMLHttpRequest;
+    const originalImage = globalThis.Image;
+    const tunnel = {
+      fetch: tunnelFetch,
+      XHR: TunnelXHR,
+      WebSocket: TunnelWebSocket,
+      EventSource: TunnelEventSource,
+      Image: tunnelImage,
+      Worker: tunnelWorker,
+      import: tunnelImport,
+      sendBeacon: tunnelSendBeacon,
+      setAttr,
+      setAttrNS,
+      setUrlProp,
+      setStyle,
+      getStyle,
+      setStyleAttr,
+      setStyleText,
+      setInnerHTML,
+      insertAdjacentHTML: insertAdjacentHTMLT,
+      rewriteCssText,
+      resolveToBlobUrl,
+      processDataHatchAttrs,
+      rewriteHtmlString,
+      _resolveUrlString: (v) => v,
+      _resolveCssValue: (v) => v,
+      _resolveCssText: (v) => v,
+      _resolveStyleProp: (v) => v,
+      _importMeta: {
+        get url() {
+          return importMetaUrl(SELF_HREF, SELF_BASE_DIR);
+        }
+      },
+      _state: {
+        get port() {
+          return port;
+        },
+        get inFlight() {
+          return pending.size;
+        },
+        get blobCacheSize() {
+          return blobCache.size;
+        },
+        get blobStats() {
+          return { ...blobStats };
+        }
+      }
+    };
+    globalThis.__tunnel = tunnel;
+    window.__tunnel = tunnel;
+    try {
+      globalThis.fetch = tunnelFetch;
+      window.fetch = tunnelFetch;
+      globalThis.XMLHttpRequest = TunnelXHR;
+      window.XMLHttpRequest = TunnelXHR;
+      globalThis.WebSocket = TunnelWebSocket;
+      window.WebSocket = TunnelWebSocket;
+      globalThis.EventSource = TunnelEventSource;
+      window.EventSource = TunnelEventSource;
+      const nav = globalThis.navigator;
+      if (nav && typeof nav.sendBeacon === "function") {
+        nav.sendBeacon = (url, data) => tunnelSendBeacon(url, data);
+      }
+      const NativeURL = globalThis.URL;
+      const TunnelURL = function(url, base) {
+        return resolveTunnelUrl(url, base, SELF_HREF, NativeURL);
+      };
+      TunnelURL.prototype = NativeURL.prototype;
+      for (const k of Object.getOwnPropertyNames(NativeURL)) {
+        if (k === "prototype" || k === "length" || k === "name")
+          continue;
+        try {
+          TunnelURL[k] = NativeURL[k];
+        } catch {}
+      }
+      globalThis.URL = TunnelURL;
+      window.URL = TunnelURL;
+    } catch {}
+    try {
+      const hist = globalThis.history;
+      if (hist && typeof hist.pushState === "function" && typeof hist.replaceState === "function") {
+        const nativePushState = hist.pushState.bind(hist);
+        const nativeReplaceState = hist.replaceState.bind(hist);
+        hist.pushState = function(state, title, url) {
+          warnHistoryUrlDropped("pushState", url);
+          return nativePushState(state, title ?? "");
+        };
+        hist.replaceState = function(state, title, url) {
+          warnHistoryUrlDropped("replaceState", url);
+          return nativeReplaceState(state, title ?? "");
+        };
+      }
+    } catch {}
+    try {
+      const nativeCreateObjectURL = URL.createObjectURL.bind(URL);
+      const nativeRevokeObjectURL = URL.revokeObjectURL.bind(URL);
+      URL.createObjectURL = function(obj) {
+        const created = nativeCreateObjectURL(obj);
+        try {
+          objectUrls.add(created);
+        } catch {}
+        return created;
+      };
+      URL.revokeObjectURL = function(objectUrl) {
+        try {
+          objectUrls.delete(objectUrl);
+        } catch {}
+        nativeRevokeObjectURL(objectUrl);
+      };
+    } catch {}
+    const announceEpoch = Math.random().toString(36).slice(2) + "-" + Date.now().toString(36);
+    let announceTimer = null;
+    function announce() {
+      try {
+        window.parent.postMessage({ type: "bundle:ready", epoch: announceEpoch }, "*");
+      } catch {}
+    }
+    function startAnnouncing() {
+      announce();
+      announceTimer = setInterval(() => {
+        if (port != null) {
+          if (announceTimer != null)
+            clearInterval(announceTimer);
+          announceTimer = null;
+          return;
+        }
+        announce();
+      }, 120);
+    }
+    function onParentMessage(ev) {
+      const data = ev.data;
+      if (!data || typeof data !== "object")
+        return;
+      if (data.type === "bundle:init-port" && ev.ports && ev.ports[0]) {
+        if (port != null)
+          return;
+        if (announceTimer != null) {
+          clearInterval(announceTimer);
+          announceTimer = null;
+        }
+        port = ev.ports[0];
+        port.onmessage = (pe) => {
+          const msg = pe.data;
+          if (!msg || typeof msg !== "object")
+            return;
+          if (msg.type === "http.res") {
+            const ent = pending.get(msg.id);
+            if (ent) {
+              pending.delete(msg.id);
+              ent.resolve(msg);
+            }
+          } else if (msg.type === "ws.opened" || msg.type === "ws.message" || msg.type === "ws.closed" || msg.type === "ws.error") {
+            openWs.get(msg.id)?._handle(msg);
+          }
+        };
+        port.start?.();
+        portReadyResolve?.(port);
+        installCssObserver();
+        rewriteAuthoredHtml();
+        try {
+          window.parent.postMessage({ type: "bundle:port-attached" }, "*");
+        } catch {}
+      }
+    }
+    window.addEventListener("message", onParentMessage);
+    installDownloadLinks(tunnelFetch, isExternalUrl2, __BLOB_REVOKE_DELAY_MS);
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      startAnnouncing();
+    } else {
+      document.addEventListener("DOMContentLoaded", startAnnouncing);
+    }
+  })();
+})();
+
+;
+"use strict";
+var CONFIG = {
+  WEBHOOK_URL: ""
+};
+var SAMPLES = ["Assalam-o-Alaikum! Mujhe kal sham 5 baje haircut aur facial karwana hai. Mera budget 3000 rupay tak hai. Kya slot mil jayega? Mera number 0300-1234567 hai.", "Hello, I want to buy a Samsung phone cover and a charger for my shop's display. What is the price? I need it urgently this week, my budget is around Rs 5,000.", "price batao"];
+var BIZ_LABEL = {
+  "Salon": {
+    en: "our salon",
+    ru: "hamaray salon",
+    ur: "ہمارے سیلون"
+  },
+  "Shop": {
+    en: "our shop",
+    ru: "hamari shop",
+    ur: "ہماری دکان"
+  },
+  "Coaching Center": {
+    en: "our coaching center",
+    ru: "hamaray coaching center",
+    ur: "ہمارے کوچنگ سینٹر"
+  },
+  "Clinic": {
+    en: "our clinic",
+    ru: "hamaray clinic",
+    ur: "ہمارے کلینک"
+  },
+  "Property Dealer": {
+    en: "our property office",
+    ru: "hamaray property office",
+    ur: "ہمارے پراپرٹی آفس"
+  }
+};
+var ROMAN_WORDS = ["mujhe", "chahiye", "hai", "hain", "ka", "ki", "ke", "mein", "batao", "karwana", "karna", "aap", "ap", "mera", "meri", "kal", "baje", "rupay", "kya", "miley", "mil", "jaye", "jayega", "bhai", "wala", "wali", "krna", "krwana", "chahye", "acha", "theek", "shukriya", "assalam", "alaikum", "kab", "kitne", "kitna", "lena", "dena", "ho", "hoga", "kr", "bhej", "bhejo", "number", "slot", "gaya", "raha", "rahi", "sakta", "sakti", "krwana"];
+var URGENCY = ["urgent", "urgently", "jaldi", "foran", "fawran", "abhi", "aaj", "aj", "kal", "today", "tomorrow", "this week", "isi week", "asap", "emergency", "sham", "subah", "کل", "آج", "جلدی", "فوراً", "صبح", "شام"];
+var SERVICE_WORDS = ["haircut", "facial", "makeup", "bridal", "manicure", "pedicure", "hair", "bal", "phone", "mobile", "charger", "cover", "case", "laptop", "course", "class", "tuition", "admission", "dakhla", "math", "english", "science", "checkup", "doctor", "appointment", "dental", "teeth", "plot", "house", "ghar", "flat", "rent", "kiraya", "shop", "dukan", "car", "gari"];
+var BIZ_KEYWORDS = {
+  "Salon": ["haircut", "facial", "makeup", "bridal", "manicure", "pedicure", "salon", "parlour", "parlor", "barber", "hair cut", "bal kat", "shave", "سیلون", "حجام"],
+  "Shop": ["phone", "mobile", "charger", "cover", "case", "laptop", "samsung", "iphone", "shop", "dukan", "dukaan", "display", "gadget", "electronics", "headphone", "earbud", "دکان", "موبائل"],
+  "Coaching Center": ["admission", "dakhla", "course", "tuition", "coaching", "academy", "student", "padhna", "seekhna", "matric", "inter class", "کوچنگ", "داخلہ", "اکیڈمی"],
+  "Clinic": ["doctor", "checkup", "clinic", "dental", "teeth", "dant", "bukhar", "fever", "mareez", "patient", "ilaj", "dawai", "ڈاکٹر", "کلینک", "بخار"],
+  "Property Dealer": ["plot", "flat", "ghar khareed", "ghar bech", "house for", "rent par", "kiraya", "property", "makaan", "zameen", "پلاٹ", "مکان", "پراپرٹی"]
+};
+function detectBiz(text) {
+  var t = " " + text.toLowerCase() + " ";
+  var best = null,
+    bestScore = 0;
+  Object.keys(BIZ_KEYWORDS).forEach(function (biz) {
+    var score = 0;
+    BIZ_KEYWORDS[biz].forEach(function (kw) {
+      if (t.indexOf(kw) !== -1) score++;
+    });
+    if (score > bestScore) {
+      bestScore = score;
+      best = biz;
+    }
+  });
+  return bestScore > 0 ? best : null;
+}
+function detectLanguage(text) {
+  if (/[\u0600-\u06FF]/.test(text)) return "Urdu";
+  var words = text.toLowerCase().replace(/[^a-z\s]/g, " ").split(/\s+/).filter(Boolean);
+  var hits = 0;
+  words.forEach(function (w) {
+    if (ROMAN_WORDS.indexOf(w) !== -1) hits++;
+  });
+  if (words.length > 0 && (hits >= 2 || hits / words.length >= 0.3)) return "Roman Urdu";
+  return "English";
+}
+function detectIntent(text, biz) {
+  var t = text.toLowerCase();
+  if (/(admission|dakhla|enroll|داخل)/.test(t)) return "admission";
+  if (/(book|appointment|slot|karwana|karna hai|karni hai|reserve|visit|checkup|داکٹر|اپائنٹمنٹ)/.test(t)) return "booking";
+  if (/(price|rate|charges|fees|fee|cost|kitne|kitna|kitnay|قیمت|دام)/.test(t)) return "price";
+  if (biz === "Coaching Center" && /(course|class|padhna|seekhna)/.test(t)) return "admission";
+  if (biz === "Clinic" && /(dard|pain|bukhar|fever|mareez|patient)/.test(t)) return "booking";
+  return "general";
+}
+function extractBudget(text) {
+  var m = text.match(/(?:rs\.?|pkr|rupees|rupay|rupaye|روپے)\s*[:\-]?\s*(\d[\d,]*)/i) || text.match(/(\d[\d,]*)\s*(?:rs\.?|rupees|rupay|rupaye|hazar|روپے)/i) || text.match(/budget[^0-9]{0,12}(\d[\d,]*)/i);
+  if (!m) return null;
+  var n = parseInt(m[1].replace(/,/g, ""), 10);
+  if (/hazar/i.test(m[0]) && n < 1000) n = n * 1000;
+  return "Rs " + n.toLocaleString("en-US");
+}
+function extractTime(text, lang) {
+  var t = text.toLowerCase();
+  var m = text.match(/(\d{1,2})\s*(baje|am|pm|بجے)/i);
+  if (m) {
+    var mer = m[2].toLowerCase();
+    if (mer === "am" || mer === "pm") return m[1] + " " + mer.toUpperCase();
+    if (lang === "Urdu") return m[1] + " بجے";
+    if (lang === "English") return m[1] + " o'clock";
+    return m[1] + " baje";
+  }
+  var days = [["parso", "Day after tomorrow", "Parso", "پرسوں"], ["پرسوں", "Day after tomorrow", "Parso", "پرسوں"], ["kal", "Tomorrow", "Kal", "کل"], ["کل", "Tomorrow", "Kal", "کل"], ["aaj", "Today", "Aaj", "آج"], ["آج", "Today", "Aaj", "آج"], ["today", "Today", "Aaj", "آج"], ["tomorrow", "Tomorrow", "Kal", "کل"], ["monday", "Monday", "Monday", "پیر"], ["tuesday", "Tuesday", "Tuesday", "منگل"], ["wednesday", "Wednesday", "Wednesday", "بدھ"], ["thursday", "Thursday", "Thursday", "جمعرات"], ["friday", "Friday", "Friday", "جمعہ"], ["saturday", "Saturday", "Saturday", "ہفتہ"], ["sunday", "Sunday", "Sunday", "اتوار"], ["sham", "Evening", "Sham", "شام"], ["شام", "Evening", "Sham", "شام"], ["subah", "Morning", "Subah", "صبح"], ["صبح", "Morning", "Subah", "صبح"], ["this week", "This week", "Is hafte", "اس ہفتے"], ["isi week", "This week", "Is hafte", "اس ہفتے"], ["اس ہفتے", "This week", "Is hafte", "اس ہفتے"]];
+  for (var i = 0; i < days.length; i++) {
+    if (t.indexOf(days[i][0]) !== -1) return lang === "Urdu" ? days[i][3] : lang === "English" ? days[i][1] : days[i][2];
+  }
+  return null;
+}
+function extractService(text, biz) {
+  var t = text.toLowerCase();
+  for (var i = 0; i < SERVICE_WORDS.length; i++) {
+    if (t.indexOf(SERVICE_WORDS[i]) !== -1) {
+      var w = SERVICE_WORDS[i];
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }
+  }
+  var byBiz = {
+    "Salon": "Salon Service",
+    "Shop": "Purchase",
+    "Coaching Center": "Course / Class",
+    "Clinic": "Checkup",
+    "Property Dealer": "Property"
+  };
+  return byBiz[biz] || "General";
+}
+function extractContact(text) {
+  var phone = text.match(/(\+?92|0)?3\d{2}[-\s]?\d{7}/);
+  var email = text.match(/[\w.]+@[\w.]+\.\w+/);
+  if (phone) return "Mobile number found";
+  if (email) return "Email found";
+  return null;
+}
+function extractName(text) {
+  var m = text.match(/(?:\bmera naam\b|\bmy name is\b|\bi am\b|\bmain\b|\bmai\b)\s+([A-Za-z][a-z]+)/i);
+  if (m) {
+    var n = m[1];
+    var stop = ["mujhe", "kal", "aap", "ek", "the", "ne", "ko", "looking", "interested", "here", "writing", "trying", "searching", "hoping", "wondering", "asking", "calling"];
+    if (stop.indexOf(n.toLowerCase()) === -1) return n.charAt(0).toUpperCase() + n.slice(1);
+  }
+  return "—";
+}
+function scoreLead(text, facts) {
+  var t = text.toLowerCase();
+  var pts = 0,
+    why = [];
+  if (facts.budget) {
+    pts += 2;
+    why.push("clear budget stated (" + facts.budget + ")");
+  }
+  var urgent = URGENCY.some(function (u) {
+    return t.indexOf(u) !== -1;
+  });
+  if (urgent) {
+    pts += 2;
+    why.push("time-sensitive / urgent");
+  }
+  if (facts.serviceKnown) {
+    pts += 1;
+    why.push("clear service requested");
+  }
+  if (facts.contact) {
+    pts += 2;
+    why.push("contact number provided");
+  }
+  if (facts.intent === "booking" || facts.intent === "admission") {
+    pts += 1;
+    why.push("strong intent to proceed");
+  }
+  if (facts.intent === "price") {
+    pts += 1;
+    why.push("asked about price/fees — clear interest");
+  }
+  var words = t.split(/\s+/).filter(Boolean).length;
+  if (words <= 3) {
+    pts -= 2;
+    why.push("message is very short and vague");
+  } else if (words >= 12) {
+    pts += 1;
+    why.push("detailed message — a serious customer");
+  }
+  var level = pts >= 4 ? "Hot" : pts >= 2 ? "Warm" : "Cold";
+  var reason;
+  if (level === "Hot") reason = "Strong lead: " + why.slice(0, 3).join(", ") + ". A customer to contact right away.";else if (level === "Warm") reason = "Real interest: " + (why.length ? why.slice(0, 2).join(", ") : "some information provided") + ". A prompt reply and a little guidance can turn this Hot.";else reason = "Weak lead: " + (why.length ? why[why.length - 1] : "no budget, no timing, no detail") + ". Looks like a casual enquiry for now.";
+  return {
+    level: level,
+    reason: reason
+  };
+}
+function composeReply(lang, biz, facts) {
+  var L = BIZ_LABEL[biz] || BIZ_LABEL["Shop"];
+  var service = facts.serviceKnown ? facts.service : null;
+  if (lang === "Urdu") {
+    return "السلام علیکم! " + L.ur + " میں رابطہ کرنے کا شکریہ۔" + (service ? " آپ کی مطلوبہ سروس (" + service + ") کے بارے میں ہمیں آپ کا پیغام مل گیا ہے۔" : " ہمیں آپ کا پیغام مل گیا ہے۔") + (facts.time ? " آپ کا بتایا ہوا وقت نوٹ کر لیا گیا ہے۔" : "") + " براہ کرم اپنا نام اور موبائل نمبر بھیج دیں، ہم فوراً تصدیق کر کے آپ کو آگاہ کر دیں گے۔ شکریہ!";
+  }
+  if (lang === "Roman Urdu") {
+    return "Assalam-o-Alaikum! " + L.ru + " mein rabta karne ka shukriya." + (service ? " Aap ki " + service + " ki request mil gayi hai" : " Aap ka message mil gaya hai") + (facts.budget ? ", aur aap ka budget (" + facts.budget + ") bhi note kar liya hai" : "") + "." + (facts.time ? " Aap ka bataya hua waqt (" + facts.time + ") note kar liya gaya hai." : "") + " Bas apna naam confirm kar dein — hum foran aap ko tafseel bhej dete hain. Shukriya!";
+  }
+  return "Hello! Thank you for contacting " + L.en + "." + (service ? " We have received your request for " + service : " We have received your message") + (facts.budget ? " and noted your budget (" + facts.budget + ")" : "") + "." + (facts.time ? " Your preferred time (" + facts.time + ") has been noted." : "") + " Please share your name and phone number, and we will confirm everything right away. Thank you!";
+}
+function composeAlert(score, biz, facts) {
+  var icon = score.level === "Hot" ? "🔥" : score.level === "Warm" ? "⭐" : "❄️";
+  var lines = [icon + " " + score.level + " Lead! (" + biz + ")"];
+  if (facts.serviceKnown) lines.push("Service: " + facts.service);
+  if (facts.budget) lines.push("Budget: " + facts.budget);
+  if (facts.time) lines.push("Time: " + facts.time);
+  lines.push("The customer has been replied to, and the entry is saved in the sheet.");
+  if (score.level === "Hot") lines.push("Tip: call this lead yourself right away, too.");
+  return lines.join("\n");
+}
+function analyze(text, biz) {
+  var lang = detectLanguage(text);
+  var intent = detectIntent(text, biz);
+  var service = extractService(text, biz);
+  var genericServices = ["Salon Service", "Purchase", "Course / Class", "Checkup", "Property", "General"];
+  var facts = {
+    lang: lang,
+    intent: intent,
+    service: service,
+    serviceKnown: genericServices.indexOf(service) === -1,
+    budget: extractBudget(text),
+    time: extractTime(text, lang),
+    contact: extractContact(text),
+    name: extractName(text)
+  };
+  var score = scoreLead(text, facts);
+  return {
+    facts: facts,
+    score: score,
+    reply: composeReply(lang, biz, facts),
+    alert: composeAlert(score, biz, facts)
+  };
+}
+var msgInput = document.getElementById("msgInput");
+var bizType = document.getElementById("bizType");
+var bizAutoHint = document.getElementById("bizAutoHint");
+var runBtn = document.getElementById("runBtn");
+var formHint = document.getElementById("formHint");
+function applyAutoBiz(text) {
+  var detected = detectBiz(text || "");
+  if (detected) {
+    bizType.value = detected;
+    if (bizAutoHint) {
+      bizAutoHint.textContent = "✓ Auto-detected: business selected from the message — " + detected;
+      bizAutoHint.classList.add("show");
+    }
+    return detected;
+  }
+  return null;
+}
+var stages = Array.prototype.slice.call(document.querySelectorAll(".stage"));
+var stageStatus = stages.map(function (s) {
+  return s.querySelector(".st-status");
+});
+var cards = {
+  understand: document.getElementById("cardUnderstand"),
+  score: document.getElementById("cardScore"),
+  sheet: document.getElementById("cardSheet"),
+  reply: document.getElementById("cardReply"),
+  alert: document.getElementById("cardAlert")
+};
+var running = false;
+document.querySelectorAll(".chip").forEach(function (chip) {
+  chip.addEventListener("click", function () {
+    document.querySelectorAll(".chip").forEach(function (c) {
+      c.classList.remove("active");
+    });
+    chip.classList.add("active");
+    msgInput.value = SAMPLES[parseInt(chip.getAttribute("data-sample"), 10)];
+    applyAutoBiz(msgInput.value);
+    __tunnel.setStyle(formHint, "display", "none");
+    msgInput.focus();
+  });
+});
+msgInput.addEventListener("input", function () {
+  applyAutoBiz(msgInput.value);
+});
+bizType.addEventListener("change", function () {
+  if (bizAutoHint) bizAutoHint.classList.remove("show");
+});
+function setStage(i, state, statusText) {
+  stages[i].classList.remove("active", "done");
+  if (state) stages[i].classList.add(state);
+  if (statusText) stageStatus[i].textContent = statusText;
+  var num = stages[i].querySelector(".num");
+  num.textContent = state === "done" ? "✓" : String(i + 1);
+}
+function resetPipeline() {
+  for (var i = 0; i < 6; i++) setStage(i, "", "Waiting…");
+  Object.keys(cards).forEach(function (k) {
+    cards[k].classList.remove("show");
+  });
+}
+function nowTime() {
+  var d = new Date(),
+    h = d.getHours(),
+    m = d.getMinutes();
+  var ap = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return h + ":" + (m < 10 ? "0" : "") + m + " " + ap;
+}
+runBtn.addEventListener("click", function () {
+  if (running) return;
+  var text = msgInput.value.trim();
+  if (!text) {
+    __tunnel.setStyle(formHint, "display", "block");
+    msgInput.focus();
+    return;
+  }
+  __tunnel.setStyle(formHint, "display", "none");
+  var autoBiz = applyAutoBiz(text);
+  var biz = autoBiz || bizType.value;
+  var result = analyze(text, biz);
+  var f = result.facts,
+    s = result.score;
+  running = true;
+  runBtn.disabled = true;
+  runBtn.textContent = "⏳ System is running…";
+  resetPipeline();
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var step = reduced ? 60 : 650;
+  var intentLabel = {
+    booking: "Booking",
+    price: "Price inquiry",
+    admission: "Admission",
+    general: "General inquiry"
+  }[f.intent];
+  var plan = [{
+    status: "Message arriving via webhook",
+    done: "Message received ✓",
+    after: null
+  }, {
+    status: "Reading the message…",
+    done: f.lang + " · " + intentLabel + " detected ✓",
+    after: function () {
+      document.getElementById("uLang").textContent = f.lang;
+      document.getElementById("uIntent").textContent = intentLabel;
+      document.getElementById("uService").textContent = f.serviceKnown ? f.service : f.service + " (estimated)";
+      document.getElementById("uBudget").textContent = f.budget || "— not mentioned";
+      document.getElementById("uTime").textContent = f.time || "— not mentioned";
+      document.getElementById("uContact").textContent = f.contact || "— not found";
+      cards.understand.classList.add("show");
+    }
+  }, {
+    status: "Scoring the lead…",
+    done: s.level + " lead confirmed ✓",
+    after: function () {
+      var badge = document.getElementById("scoreBadge");
+      badge.textContent = s.level;
+      badge.className = "score-badge score-" + s.level;
+      document.getElementById("scoreReason").textContent = s.reason;
+      cards.score.classList.add("show");
+    }
+  }, {
+    status: "Writing to the sheet…",
+    done: "Entry saved ✓",
+    after: function () {
+      var tbody = document.getElementById("sheetBody");
+      Array.prototype.forEach.call(tbody.querySelectorAll("tr.new-row"), function (r) {
+        r.classList.remove("new-row");
+      });
+      var tr = document.createElement("tr");
+      tr.className = "new-row";
+      __tunnel.setInnerHTML(tr, "", "innerHTML");
+      [f.name, f.serviceKnown ? f.service : f.service, f.budget || "—"].forEach(function (v) {
+        var td = document.createElement("td");
+        td.textContent = v;
+        tr.appendChild(td);
+      });
+      var tdScore = document.createElement("td");
+      var pill = document.createElement("span");
+      pill.className = "pill pill-" + s.level;
+      pill.textContent = s.level;
+      tdScore.appendChild(pill);
+      tr.appendChild(tdScore);
+      var tdTime = document.createElement("td");
+      tdTime.textContent = nowTime();
+      tr.appendChild(tdTime);
+      tbody.appendChild(tr);
+      cards.sheet.classList.add("show");
+    }
+  }, {
+    status: "Preparing the reply…",
+    done: "Reply sent in " + f.lang + " ✓",
+    after: function () {
+      var el = document.getElementById("replyText");
+      el.textContent = result.reply;
+      el.classList.toggle("urdu", f.lang === "Urdu");
+      __tunnel.setAttr(el, "dir", f.lang === "Urdu" ? "rtl" : "ltr");
+      cards.reply.classList.add("show");
+    }
+  }, {
+    status: "Sending the owner alert…",
+    done: "Alert delivered ✓",
+    after: function () {
+      document.getElementById("alertText").textContent = result.alert;
+      cards.alert.classList.add("show");
+    }
+  }];
+  var i = 0;
+  function next() {
+    if (i > 0) {
+      setStage(i - 1, "done", plan[i - 1].done);
+      if (plan[i - 1].after) plan[i - 1].after();
+    }
+    if (i >= plan.length) {
+      running = false;
+      runBtn.disabled = false;
+      runBtn.textContent = "▶ Run Again";
+      cards.alert.scrollIntoView({
+        behavior: reduced ? "auto" : "smooth",
+        block: "nearest"
+      });
+      return;
+    }
+    setStage(i, "active", plan[i].status);
+    i++;
+    setTimeout(next, step);
+  }
+  next();
+});
+;
+var ASSISTANT_WEBHOOK_URL = "";
+var AI_INTENTS = [{
+  id: "what-is",
+  keys: ["what is loona", "what is autopilot", "what is this", "what does it do", "about this", "overview", "introduction", "ye kya", "kya hai", "system kya", "explain the system", "whats this"],
+  answer: `<b>Loona Autopilot</b> is an <b>AI Office Manager</b> for small business owners. The moment a customer message arrives, the system does five things on its own:<ul><li>🧠 <b>Understands it</b> — intent and language (English, Roman Urdu or Urdu)</li><li>🎯 <b>Scores it</b> — Hot, Warm or Cold lead</li><li>📊 <b>Logs it</b> — every lead saved in a Google Sheet</li><li>✉️ <b>Replies</b> — in the customer's own language, within seconds</li><li>📱 <b>Alerts the owner</b> — instantly, on their phone</li></ul>It's built for owners who are tired of answering every message personally — so no lead is ever missed, even at 2 AM.`
+}, {
+  id: "demo",
+  keys: ["demo", "live demo", "try it", "test it", "run the system", "how to use", "use the demo", "kaise use", "kaise chalega", "how does it work"],
+  answer: `Using the <b>Live Demo</b> takes under a minute:<ul><li><b>1.</b> Type a customer message in the box — or tap one of the 3 <b>sample chips</b>: Sample 1 (Salon booking, Roman Urdu), Sample 2 (Shop price question, English), Sample 3 (a casual question — watch it score Cold).</li><li><b>2.</b> The business dropdown <b>auto-selects</b> from your message (e.g. "haircut" → Salon). You can still change it yourself.</li><li><b>3.</b> Press <b>▶ Run the System</b>.</li><li><b>4.</b> The <b>6 pipeline stages</b> light up one by one — gold while running, green ✓ when done.</li><li><b>5.</b> Read the result cards: <b>What the AI Understood</b>, <b>Lead Score</b>, <b>Sheet Entry</b> (your message becomes a new highlighted row) and <b>Reply to the Customer</b> — plus the <b>Owner Alert</b> phone mockup.</li></ul>Tip: run Sample 1, then Sample 3, to see a strong lead next to a cold one.`
+}, {
+  id: "score",
+  keys: ["score", "scoring", "hot", "warm", "cold", "rating", "rate", "points", "calculated", "hisab", "lead score", "kaise score", "score kaise"],
+  answer: `The demo scores with a <b>transparent rule engine</b> — the points are open, nothing hidden:<ul><li>Clear budget stated: <b>+2</b></li><li>Urgent / time-sensitive: <b>+2</b></li><li>Contact number given: <b>+2</b></li><li>Clear service requested: <b>+1</b></li><li>Booking or admission intent: <b>+1</b></li><li>Asked about price: <b>+1</b></li><li>Detailed message (12+ words): <b>+1</b></li><li>Very short, vague message (3 words or fewer): <b>−2</b></li></ul>Totals: <b>4+ = 🔥 Hot</b> · <b>2–3 = ⭐ Warm</b> · <b>below 2 = ❄️ Cold</b>. Sample 1 scores Hot (budget + urgency + contact + booking); "price batao" scores Cold. In the real build, this scoring is done by <b>Gemini AI through Make</b>.`
+}, {
+  id: "after",
+  keys: ["after scoring", "after the score", "what happens", "what next", "then what", "result cards", "after that", "scoring ke baad"],
+  answer: `After the score is set, the system finishes the job on its own:<ul><li>📊 <b>Sheet Entry</b> — a new row is added to the register: name, service, budget, the Hot/Warm/Cold pill and time. In the demo, watch for the highlighted new row.</li><li>✉️ <b>Reply to the Customer</b> — an instant reply in the customer's own language (English, Roman Urdu or Urdu).</li><li>📱 <b>Owner Alert</b> — the owner gets a phone notification with the score, service, budget and time. For 🔥 Hot leads it adds a tip: "call this lead yourself right away, too."</li></ul>In the real build this means: your own Google Sheet, the reply sent through your connected channel, and an instant alert to you.`
+}, {
+  id: "booking",
+  keys: ["book", "booking", "order", "buy", "purchase", "cost", "fee", "fees", "price", "pricing", "fiverr", "email", "contact", "reach you", "hire", "payment", "kitne ka", "kimat", "how do i book", "book this"],
+  answer: `You can book the real system from <b>any platform</b> — pick whichever suits you:<ul><li><b>Fiverr</b> — tap any gold "Order on Fiverr" button on this page</li><li><b>Email</b> — aurangzebloona@gmail.com (the "Email Us" button opens your mail app with the subject pre-filled)</li><li><b>Facebook / Instagram</b> — send a message to Loona Automation, or reply on any platform where you saw the ad</li></ul>No platform is required. There is no fixed price listed on this page — pricing is discussed when you message. One message is all it takes to start.`
+}, {
+  id: "honesty",
+  keys: ["real system", "real engine", "really work", "actually work", "fake", "genuine", "straight talk", "rule engine", "is this real", "honest", "concept", "demo or real", "or a demo", "ya demo"],
+  answer: `<b>Straight talk</b> — the same note you'll find under the demo: this page is a <b>live demo of the concept</b>. Here, the score and reply are produced by a quick, open <b>rule engine inside this page</b> (ask me "How is the score calculated?" to see its exact rules). The <b>real system works exactly like this</b>, except the engine runs through <b>Make + Gemini AI</b>, connected to your <b>Google Sheet</b> and <b>Gmail</b>. When you book, that real version is built and connected for your business.`
+}, {
+  id: "webhook",
+  keys: ["webhook", "make", "gemini", "connect it", "integration", "config", "api", "real engine"],
+  answer: `The page already has the connection point ready. In the page's code there's an empty slot called <b>CONFIG.WEBHOOK_URL</b>: when the real Make scenario is built, its webhook URL is pasted there, and this demo can <b>POST the message to the real Make + Gemini system</b> instead of using the page's rule engine. That Make scenario is the real engine — it receives the message, Gemini AI reads and scores it, writes the Google Sheet, and sends the reply + owner alert. (This guide has a similar hook of its own, ASSISTANT_WEBHOOK_URL, for a future live-AI version — right now it answers from a built-in guide, instantly and free.)`
+}, {
+  id: "sheet",
+  keys: ["sheet", "google sheet", "register", "excel", "saved", "logged", "log it", "entry", "entries", "row", "rows", "sheet me"],
+  answer: `Every lead is logged automatically in a <b>sample Google Sheet</b> register with the columns <b>Name · Service · Budget · Score · Time</b>. The demo starts with two example rows (Ayesha — Bridal Makeup, Hot · Bilal — Mobile Cover, Cold) so you can see the format. When you press <b>▶ Run the System</b>, your message becomes a <b>new highlighted row</b> — detected service, budget, the Hot/Warm/Cold pill and the current time. In the real build this is <b>your own Google Sheet</b>, so the whole day's leads sit in one register and nothing is ever lost.`
+}, {
+  id: "alert",
+  keys: ["alert", "notification", "notify", "owner", "itela", "khabar", "phone alert"],
+  answer: `The owner never has to watch the inbox. Every run ends with an <b>Owner Alert</b> — shown in the demo as a phone notification:<ul><li>🔥 <b>Hot</b> / ⭐ <b>Warm</b> / ❄️ <b>Cold</b> label + business type</li><li>Service, budget and time — whenever the message includes them</li><li>Confirmation that the customer was replied to and the sheet updated</li><li>For 🔥 Hot leads, a tip: <b>"call this lead yourself right away, too"</b></li></ul>In the real system this alert goes out instantly through the connected channels, so a 2 AM Hot lead still reaches you.`
+}, {
+  id: "language",
+  keys: ["language", "languages", "urdu", "roman urdu", "english", "same language", "zuban", "bhasha"],
+  answer: `The system speaks the customer's language. It detects <b>English</b>, <b>Roman Urdu</b> (e.g. "Mujhe kal sham 5 baje haircut karwana hai") and <b>Urdu script</b> — and the reply goes out <b>in that same language</b>: English in English, Roman Urdu in Roman Urdu, Urdu in Urdu (right-to-left). In the demo, the <b>"What the AI Understood"</b> card shows the detected language for every run — try Sample 1 (Roman Urdu) and Sample 2 (English) to compare.`
+}, {
+  id: "stages",
+  keys: ["stage", "stages", "pipeline", "steps", "process", "flow", "workflow", "6 stages"],
+  answer: `The demo plays out <b>6 stages</b>, exactly the way the real system runs:<ul><li><b>1 · Message Received</b> — the customer message arrives (via webhook in the real system)</li><li><b>2 · AI Reads It</b> — language, intent, service, budget, time and contact are detected</li><li><b>3 · Lead Score</b> — Hot, Warm or Cold, with the reason shown</li><li><b>4 · Sheet Entry</b> — the lead is written to the Google Sheet register</li><li><b>5 · Reply to Customer</b> — an instant reply in the customer's own language</li><li><b>6 · Alert to Owner</b> — the owner is notified on their phone</li></ul>Stages glow gold while running and turn green ✓ when done — watch them in the Live Demo.`
+}, {
+  id: "samples",
+  keys: ["sample", "samples", "chip", "chips", "example", "examples", "namuna", "sample 1", "sample 2", "sample 3"],
+  answer: `The 3 <b>sample chips</b> are one-tap demo messages:<ul><li><b>Sample 1 · Salon booking (Roman Urdu)</b> — a haircut + facial request with budget, time and phone number → scores <b>Hot</b>, auto-selects <b>Salon</b>, replies in Roman Urdu</li><li><b>Sample 2 · Shop price (English)</b> — a phone cover + charger price question, Rs 5,000, "urgently this week" → scores <b>Hot</b>, auto-selects <b>Shop</b></li><li><b>Sample 3 · Casual question (Cold)</b> — just "price batao" → scores <b>Cold</b> (too short and vague)</li></ul>Tapping a chip fills the message box, highlights the chip, auto-detects the business and focuses the box — then press <b>▶ Run the System</b>.`
+}, {
+  id: "business",
+  keys: ["business", "salon", "shop", "coaching", "clinic", "property", "dealer", "dropdown", "auto detect", "auto-detect", "detected", "type of business", "dukkan", "dukaan"],
+  answer: `The demo supports <b>5 business types</b>: <b>Salon, Shop, Coaching Center, Clinic</b> and <b>Property Dealer</b>. The dropdown label says <b>"Auto — detected from the message itself"</b>: as you type (or when you tap a sample chip), the page reads keywords — "haircut" selects Salon, "phone cover" selects Shop, "admission" selects Coaching Center — and shows a gold <b>"✓ Auto-detected"</b> hint. You can still change it manually at any time. The business type shapes the reply wording and the fallback service name.`
+}, {
+  id: "who",
+  keys: ["who is it for", "who for", "for whom", "which business", "my business", "suitable", "built for", "kis ke liye"],
+  answer: `<b>Loona Autopilot</b> is for <b>business owners who are tired of answering every message personally</b>. It fits all 5 demo business types — <b>Salon, Shop, Coaching Center, Clinic, Property Dealer</b> — and the same concept works for any business that receives customer messages. What the owner gets: <b>no lead ever missed</b> (even at 2 AM), <b>every customer answered instantly</b> in their own language, <b>everything in one Google Sheet register</b>, and a system that <b>works 24/7</b> — people sleep, the system doesn't.`
+}, {
+  id: "greeting",
+  keys: ["hello", "hi", "hey", "salaam", "salam", "assalam", "aoa", "good morning", "good evening", "adab"],
+  answer: `Hello! 👋 I'm the <b>Loona Autopilot website guide</b> — a built-in assistant (not a live AI chat). I can answer questions about this page: <b>what the system is</b>, <b>how the live demo works</b>, <b>how the Hot/Warm/Cold scoring works</b>, <b>what happens after scoring</b>, or <b>how to book</b>. Tap a quick question below or type your own.`
+}];
+var AI_FALLBACK = `I'm the website's guide, so I can only answer questions about <b>this page</b> — for example:<ul><li>What Loona Autopilot is and who it's for</li><li>How the live demo and the sample chips work</li><li>How the Hot / Warm / Cold score is calculated</li><li>What happens after scoring (sheet, reply, owner alert)</li><li>Whether this is the real system or a demo</li><li>How to book — via Fiverr, email, or Facebook/Instagram messages</li></ul>Tap a quick question above, or ask in your own words.`;
+var AI_INTRO = `Hi! I'm your AI assistant — ask me about the <b>demo</b>, <b>scoring</b> or <b>booking</b>.`;
+var AI_CHIPS = [{
+  label: "What is it?",
+  intent: "what-is"
+}, {
+  label: "Demo guide",
+  intent: "demo"
+}, {
+  label: "Score?",
+  intent: "score"
+}, {
+  label: "After scoring",
+  intent: "after"
+}, {
+  label: "Real or demo?",
+  intent: "honesty"
+}, {
+  label: "Book now",
+  intent: "booking"
+}];
+function aiNorm(s) {
+  return " " + String(s).toLowerCase().replace(/[^a-z0-9\u0600-\u06ff\s]/g, " ").replace(/\s+/g, " ").trim() + " ";
+}
+function aiFindIntent(text) {
+  var n = aiNorm(text),
+    best = null,
+    bestScore = 0;
+  for (var i = 0; i < AI_INTENTS.length; i++) {
+    var score = 0,
+      keys = AI_INTENTS[i].keys;
+    for (var k = 0; k < keys.length; k++) {
+      if (n.indexOf(" " + keys[k] + " ") !== -1) score++;
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      best = AI_INTENTS[i];
+    }
+  }
+  return bestScore > 0 ? best : null;
+}
+function aiAnswerFor(text) {
+  var intent = aiFindIntent(text);
+  return {
+    id: intent ? intent.id : "fallback",
+    html: intent ? intent.answer : AI_FALLBACK
+  };
+}
+(function () {
+  var card = document.getElementById("aiGuideCard");
+  if (!card) return;
+  var toggleBtn = document.getElementById("aiGuideToggle");
+  var msgs = document.getElementById("aiGuideMsgs");
+  var chipsBox = document.getElementById("aiGuideChips");
+  var input = document.getElementById("aiGuideInput");
+  var send = document.getElementById("aiGuideSend");
+  function scrollDown() {
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+  function addUser(text) {
+    var d = document.createElement("div");
+    d.className = "ai-msg user";
+    d.textContent = text;
+    msgs.appendChild(d);
+    scrollDown();
+  }
+  function addBot(html) {
+    var d = document.createElement("div");
+    d.className = "ai-msg bot";
+    __tunnel.setInnerHTML(d, html, "innerHTML");
+    msgs.appendChild(d);
+    scrollDown();
+  }
+  function showAnswer(question, html) {
+    if (ASSISTANT_WEBHOOK_URL) {
+      aiAskWebhook(question, html);
+      return;
+    }
+    setTimeout(function () {
+      addBot(html);
+    }, 250);
+  }
+  function aiAskWebhook(question, fallbackHtml) {
+    var thinking = document.createElement("div");
+    thinking.className = "ai-msg bot";
+    thinking.textContent = "Thinking…";
+    msgs.appendChild(thinking);
+    scrollDown();
+    __tunnel.fetch(ASSISTANT_WEBHOOK_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        question: question
+      })
+    }).then(function (res) {
+      return res.text();
+    }).then(function (txt) {
+      var ans = txt;
+      try {
+        var j = JSON.parse(txt);
+        if (j && j.answer) ans = j.answer;
+      } catch (e) {}
+      thinking.textContent = "";
+      var safe = document.createElement("div");
+      safe.textContent = ans;
+      thinking.appendChild(safe);
+      scrollDown();
+    }).catch(function () {
+      __tunnel.setInnerHTML(thinking, fallbackHtml, "innerHTML");
+      scrollDown();
+    });
+  }
+  function chipAnswer(id) {
+    for (var i = 0; i < AI_INTENTS.length; i++) {
+      if (AI_INTENTS[i].id === id) return AI_INTENTS[i].answer;
+    }
+    return AI_FALLBACK;
+  }
+  function renderChips() {
+    __tunnel.setInnerHTML(chipsBox, "", "innerHTML");
+    AI_CHIPS.forEach(function (c) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ai-guide-chip";
+      b.textContent = c.label;
+      __tunnel.setAttr(b, "data-intent", c.intent);
+      b.addEventListener("click", function () {
+        addUser(c.label);
+        showAnswer(c.label, chipAnswer(c.intent));
+      });
+      chipsBox.appendChild(b);
+    });
+  }
+  function sendCurrent() {
+    var v = input.value.trim();
+    if (!v) return;
+    addUser(v);
+    input.value = "";
+    showAnswer(v, aiAnswerFor(v).html);
+  }
+  function setCollapsed(collapsed) {
+    if (collapsed) card.classList.add("collapsed");else card.classList.remove("collapsed");
+    toggleBtn.textContent = collapsed ? "\u25B8" : "\u25BE";
+    __tunnel.setAttr(toggleBtn, "aria-label", collapsed ? "Expand assistant" : "Collapse assistant");
+    __tunnel.setAttr(toggleBtn, "aria-expanded", collapsed ? "false" : "true");
+  }
+  toggleBtn.addEventListener("click", function () {
+    setCollapsed(card.classList.contains("collapsed") === false);
+  });
+  send.addEventListener("click", sendCurrent);
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") sendCurrent();
+  });
+  renderChips();
+  addBot(AI_INTRO);
+})();</script>
+</body>
+</html>
